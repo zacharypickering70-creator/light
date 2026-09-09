@@ -1,0 +1,242 @@
+[
+  {
+    "density": 1.0,
+    "empty_fraction": 0.336898395721925,
+    "nearby_mean": 1.90909090909091,
+    "peak": 18,
+    "result": {
+      "damage": 83.2,
+      "hits": 6,
+      "kills": 120,
+      "level": 8,
+      "reward": 75,
+      "seconds": 87.9499999999963,
+      "victory": true
+    },
+    "seed": 4523
+  },
+  {
+    "density": 1.15,
+    "empty_fraction": 0.341176470588235,
+    "nearby_mean": 2.05882352941176,
+    "peak": 21,
+    "result": {
+      "damage": 45.44,
+      "hits": 3,
+      "kills": 125,
+      "level": 8,
+      "reward": 76,
+      "seconds": 80.0333333333301,
+      "victory": true
+    },
+    "seed": 4523
+  },
+  {
+    "density": 1.3,
+    "empty_fraction": 0.391304347826087,
+    "nearby_mean": 2.02484472049689,
+    "peak": 16,
+    "result": {
+      "damage": 42.88,
+      "hits": 3,
+      "kills": 130,
+      "level": 9,
+      "reward": 77,
+      "seconds": 76.349999999997,
+      "victory": true
+    },
+    "seed": 4523
+  },
+  {
+    "density": 1.0,
+    "empty_fraction": 0.485875706214689,
+    "nearby_mean": 1.29943502824859,
+    "peak": 16,
+    "result": {
+      "damage": 58.88,
+      "hits": 4,
+      "kills": 117,
+      "level": 8,
+      "reward": 74,
+      "seconds": 83.7666666666632,
+      "victory": true
+    },
+    "seed": 7319
+  },
+  {
+    "density": 1.15,
+    "empty_fraction": 0.409937888198758,
+    "nearby_mean": 1.54658385093168,
+    "peak": 19,
+    "result": {
+      "damage": 29.44,
+      "hits": 2,
+      "kills": 114,
+      "level": 8,
+      "reward": 73,
+      "seconds": 75.6833333333303,
+      "victory": true
+    },
+    "seed": 7319
+  },
+  {
+    "density": 1.3,
+    "empty_fraction": 0.411764705882353,
+    "nearby_mean": 1.88235294117647,
+    "peak": 20,
+    "result": {
+      "damage": 16.0,
+      "hits": 1,
+      "kills": 130,
+      "level": 8,
+      "reward": 77,
+      "seconds": 72.4333333333305,
+      "victory": true
+    },
+    "seed": 7319
+  },
+  {
+    "density": 1.0,
+    "empty_fraction": 0.372881355932203,
+    "nearby_mean": 1.87005649717514,
+    "peak": 13,
+    "result": {
+      "damage": 85.76,
+      "hits": 6,
+      "kills": 109,
+      "level": 7,
+      "reward": 72,
+      "seconds": 82.7999999999966,
+      "victory": true
+    },
+    "seed": 9021
+  },
+  {
+    "density": 1.15,
+    "empty_fraction": 0.381578947368421,
+    "nearby_mean": 1.80921052631579,
+    "peak": 13,
+    "result": {
+      "damage": 50.6368,
+      "hits": 4,
+      "kills": 106,
+      "level": 8,
+      "reward": 71,
+      "seconds": 71.4333333333306,
+      "victory": true
+    },
+    "seed": 9021
+  },
+  {
+    "density": 1.3,
+    "empty_fraction": 0.350649350649351,
+    "nearby_mean": 2.16233766233766,
+    "peak": 15,
+    "result": {
+      "damage": 45.44,
+      "hits": 3,
+      "kills": 122,
+      "level": 8,
+      "reward": 75,
+      "seconds": 72.5499999999972,
+      "victory": true
+    },
+    "seed": 9021
+  },
+  {
+    "density": 1.0,
+    "empty_fraction": 0.437869822485207,
+    "nearby_mean": 1.69822485207101,
+    "peak": 17,
+    "result": {
+      "damage": 80.32,
+      "hits": 5,
+      "kills": 111,
+      "level": 8,
+      "reward": 72,
+      "seconds": 79.9666666666634,
+      "victory": true
+    },
+    "seed": 1607
+  },
+  {
+    "density": 1.15,
+    "empty_fraction": 0.364705882352941,
+    "nearby_mean": 1.78235294117647,
+    "peak": 15,
+    "result": {
+      "damage": 29.44,
+      "hits": 2,
+      "kills": 124,
+      "level": 8,
+      "reward": 76,
+      "seconds": 79.6333333333301,
+      "victory": true
+    },
+    "seed": 1607
+  },
+  {
+    "density": 1.3,
+    "empty_fraction": 0.408163265306122,
+    "nearby_mean": 1.65986394557823,
+    "peak": 17,
+    "result": {
+      "damage": 36.32,
+      "hits": 4,
+      "kills": 118,
+      "level": 8,
+      "reward": 74,
+      "seconds": 69.0333333333307,
+      "victory": true
+    },
+    "seed": 1607
+  },
+  {
+    "density": 1.0,
+    "empty_fraction": 0.391812865497076,
+    "nearby_mean": 1.72514619883041,
+    "peak": 10,
+    "result": {
+      "damage": 85.76,
+      "hits": 6,
+      "kills": 108,
+      "level": 7,
+      "reward": 72,
+      "seconds": 80.2166666666634,
+      "victory": true
+    },
+    "seed": 8841
+  },
+  {
+    "density": 1.15,
+    "empty_fraction": 0.398692810457516,
+    "nearby_mean": 1.61437908496732,
+    "peak": 12,
+    "result": {
+      "damage": 58.88,
+      "hits": 4,
+      "kills": 105,
+      "level": 7,
+      "reward": 71,
+      "seconds": 71.4166666666639,
+      "victory": true
+    },
+    "seed": 8841
+  },
+  {
+    "density": 1.3,
+    "empty_fraction": 0.406896551724138,
+    "nearby_mean": 2.04137931034483,
+    "peak": 13,
+    "result": {
+      "damage": 82.8352,
+      "hits": 6,
+      "kills": 113,
+      "level": 8,
+      "reward": 73,
+      "seconds": 67.7333333333308,
+      "victory": true
+    },
+    "seed": 8841
+  }
+]

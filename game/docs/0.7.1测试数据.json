@@ -1,0 +1,199 @@
+[
+  {
+    "density": 1.3,
+    "early_empty": 0.421487603305785,
+    "early_nearby": 1.78512396694215,
+    "empty_fraction": 0.236625514403292,
+    "nearby_mean": 3.61728395061728,
+    "peak": 20,
+    "result": {
+      "chapter": 2,
+      "damage": 1156.35165461888,
+      "depth": 2,
+      "hits": 40,
+      "kills": 621,
+      "level": 11,
+      "lost_incense": 93,
+      "reward": 92,
+      "seconds": 242.483333333418,
+      "victory": false
+    },
+    "seed": 4523,
+    "swarm": 1.0
+  },
+  {
+    "density": 1.3,
+    "early_empty": 0.458333333333333,
+    "early_nearby": 3.15833333333333,
+    "empty_fraction": 0.241681260945709,
+    "nearby_mean": 5.92819614711033,
+    "peak": 40,
+    "result": {
+      "damage": 1963.39715575379,
+      "depth": 2,
+      "hits": 67,
+      "kills": 1206,
+      "level": 14,
+      "reward": 220,
+      "seconds": 284.85000000007,
+      "victory": true
+    },
+    "seed": 4523,
+    "swarm": 1.5
+  },
+  {
+    "density": 1.3,
+    "early_empty": 0.504132231404959,
+    "early_nearby": 1.47107438016529,
+    "empty_fraction": 0.292016806722689,
+    "nearby_mean": 3.6218487394958,
+    "peak": 27,
+    "result": {
+      "chapter": 2,
+      "damage": 690.552119329517,
+      "depth": 2,
+      "hits": 31,
+      "kills": 614,
+      "level": 11,
+      "lost_incense": 93,
+      "reward": 92,
+      "seconds": 237.400000000081,
+      "victory": false
+    },
+    "seed": 7319,
+    "swarm": 1.0
+  },
+  {
+    "density": 1.3,
+    "early_empty": 0.528925619834711,
+    "early_nearby": 1.98347107438017,
+    "empty_fraction": 0.341463414634146,
+    "nearby_mean": 4.24577861163227,
+    "peak": 32,
+    "result": {
+      "damage": 1434.26521906578,
+      "depth": 2,
+      "hits": 51,
+      "kills": 1084,
+      "level": 14,
+      "reward": 220,
+      "seconds": 266.150000000087,
+      "victory": true
+    },
+    "seed": 7319,
+    "swarm": 1.5
+  },
+  {
+    "density": 1.3,
+    "early_empty": 0.5,
+    "early_nearby": 1.61666666666667,
+    "empty_fraction": 0.232235701906412,
+    "growth": 1.025,
+    "nearby_mean": 4.12305025996534,
+    "peak": 22,
+    "result": {
+      "chapter": 2,
+      "damage": 1842.16757519705,
+      "depth": 2,
+      "hits": 60,
+      "kills": 810,
+      "level": 12,
+      "lost_incense": 93,
+      "reward": 92,
+      "seconds": 288.800000000066,
+      "victory": false
+    },
+    "seed": 9021,
+    "swarm": 1.0
+  },
+  {
+    "density": 1.3,
+    "early_empty": 0.429752066115702,
+    "early_nearby": 2.35537190082645,
+    "empty_fraction": 0.246205733558179,
+    "growth": 1.025,
+    "nearby_mean": 5.45193929173693,
+    "peak": 34,
+    "result": {
+      "damage": 2122.00326301386,
+      "depth": 2,
+      "hits": 82,
+      "kills": 1265,
+      "level": 15,
+      "reward": 220,
+      "seconds": 295.583333333393,
+      "victory": true
+    },
+    "seed": 9021,
+    "swarm": 1.5
+  },
+  {
+    "density": 1.3,
+    "early_empty": 0.396694214876033,
+    "early_nearby": 3.00826446280992,
+    "empty_fraction": 0.239690721649485,
+    "growth": 1.035,
+    "nearby_mean": 5.21907216494845,
+    "peak": 39,
+    "result": {
+      "chapter": 2,
+      "damage": 852.713142575643,
+      "depth": 2,
+      "hits": 27,
+      "kills": 672,
+      "level": 11,
+      "lost_incense": 93,
+      "reward": 92,
+      "seconds": 193.100000000046,
+      "victory": false
+    },
+    "seed": 4523,
+    "swarm": 1.5
+  },
+  {
+    "density": 1.3,
+    "early_empty": 0.446280991735537,
+    "early_nearby": 2.33057851239669,
+    "empty_fraction": 0.211442786069652,
+    "growth": 1.035,
+    "nearby_mean": 5.81094527363184,
+    "peak": 33,
+    "result": {
+      "chapter": 2,
+      "damage": 1182.28706366825,
+      "depth": 2,
+      "hits": 39,
+      "kills": 709,
+      "level": 11,
+      "lost_incense": 93,
+      "reward": 92,
+      "seconds": 200.400000000052,
+      "victory": false
+    },
+    "seed": 7319,
+    "swarm": 1.5
+  },
+  {
+    "density": 1.3,
+    "early_empty": 0.466666666666667,
+    "early_nearby": 2.19166666666667,
+    "empty_fraction": 0.206315789473684,
+    "growth": 1.035,
+    "nearby_mean": 5.64210526315789,
+    "peak": 34,
+    "result": {
+      "chapter": 2,
+      "damage": 1820.6735956822,
+      "depth": 2,
+      "hits": 56,
+      "kills": 906,
+      "level": 13,
+      "lost_incense": 93,
+      "reward": 92,
+      "seconds": 238.033333333415,
+      "victory": false
+    },
+    "seed": 9021,
+    "swarm": 1.5
+  }
+]
