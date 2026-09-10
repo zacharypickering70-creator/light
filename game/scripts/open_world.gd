@@ -9,6 +9,8 @@ var landmarks: Array[Dictionary] = []
 var obstacles: Array[Dictionary] = []
 var map_seed: int = 0
 var map_radius: float = 54.0
+var boss_place_title: Label3D
+var river_souls: Dictionary={}
 var worshippers: Array[Dictionary] = []
 
 func populate_worshippers() -> void:
@@ -99,10 +101,13 @@ func generate_layout(value: int) -> Array[Dictionary]:
 	points[farthest] = temp
 	var result: Array[Dictionary] = []
 	for i in range(7):
-		result.append({"id":i, "name":SHRINE_NAMES[i] if chapter==2 else LANDMARK_NAMES[i], "pos":points[i], "visited":i==0})
+		var names: Array=preload("res://scripts/chapter_three.gd").NAMES if chapter==3 else (SHRINE_NAMES if chapter==2 else LANDMARK_NAMES)
+		result.append({"id":i, "name":names[i], "pos":points[i], "visited":i==0})
 	return result
 
 func build_map(value: int, preview: bool = false) -> void:
+	boss_place_title=null
+	river_souls.clear()
 	worshippers.clear()
 	map_radius=20.0 if preview else 54.0
 	for child in get_children():
@@ -121,12 +126,14 @@ func build_map(value: int, preview: bool = false) -> void:
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
 	env.background_color = Color("e7e2d4")
+	if chapter==3 and not preview: env.background_color=Color("cbd8d5")
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color("f5f0e3")
 	env.ambient_light_energy = 0.85
 	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
 	env.fog_enabled = true
 	env.fog_light_color = Color("e7e2d4")
+	if chapter==3 and not preview: env.fog_light_color=Color("b5cccb")
 	env.fog_light_energy = 1.0
 	env.fog_density = 0.0015
 	environment.environment = env
@@ -173,7 +180,9 @@ func build_map(value: int, preview: bool = false) -> void:
 		root_art.add_child(region)
 		_room = region
 		var id: int = landmark["id"]
-		if chapter==2:
+		if chapter==3:
+			_river_region(id)
+		elif chapter==2:
 			_shrine_region(id)
 		elif id == 0:
 			_torus(_room,Vector3.ZERO,2.5,2.6,Color("84977a"))
@@ -207,6 +216,7 @@ func build_map(value: int, preview: bool = false) -> void:
 		var title := Label3D.new()
 		title.text = landmark["name"]
 		title.name = "LandmarkTitle"
+		if id==6: boss_place_title=title
 		title.font_size = 52
 		title.pixel_size = 0.018
 		title.modulate = Color("fff3d5")
@@ -313,6 +323,7 @@ func _material(color: Color, emission: float = 0.0, double_sided: bool = false) 
 	var gray: float = color.r*0.28+color.g*0.55+color.b*0.17
 	var ink: Color = Color(gray*0.88,gray*0.88,gray*0.82) if not red else Color("994334")
 	if color.g>color.r*1.1 and color.g>color.b*1.08: ink=Color(gray*0.74,gray*0.98,gray*0.72)
+	if chapter==3 and color.b>color.r*1.12: ink=Color(gray*0.65,gray*0.94,gray*1.1)
 	if emission>0:
 		ink=Color("c08050") if red or color.r>0.6 else Color("9c9b82")
 	var key: String = ink.to_html()+str(double_sided)
@@ -431,3 +442,80 @@ func decorate_wish_actor(actor: Node3D, kind: String) -> void:
 	else:
 		_box(body,Vector3(0,1.42,-0.29),Vector3(0.24,0.39,0.035),Color("e2cc91"))
 		_box(body,Vector3(0,1.42,-0.32),Vector3(0.045,0.26,0.02),Color("9c413e"))
+
+func _river_region(id: int) -> void:
+	_cylinder(_room,Vector3(0,0.015,0),8,8,0.07,Color("8daba8"),40)
+	for side in [-1,1]:
+		_box(_room,Vector3(side*6,0.02,0),Vector3(2.6,0.035,15),Color("5f858d"))
+		for i in range(4):
+			_lantern_small(_room,Vector3(side*6,0.3,-5+i*3),Color("9dd7cc"),0.65)
+	if id==6:
+		_cylinder(_room,Vector3(0,0.07,0),4.8,4.8,0.12,Color("4e6669"),24)
+		_torus(_room,Vector3(0,0.16,0),4.5,4.62,Color("bdd5cb"),Vector3.ZERO)
+		for i in range(8):
+			var a: float=i*TAU/8
+			var p:=Vector3(cos(a)*5,1.3,sin(a)*5)
+			_box(_room,p,Vector3(0.58,2.6,0.35),Color("c2c4af"))
+			_box(_room,p+Vector3(0,0,-0.2),Vector3(0.09,1.6,0.04),Color("354e51"))
+	elif id==1:
+		_pavilion(Vector3(0,0,-4),1.0)
+		_box(_room,Vector3(0,0.8,-2),Vector3(3,0.16,1.2),Color("526664"))
+		for i in range(4): _cylinder(_room,Vector3(-1+i*0.65,0.98,-2),0.16,0.1,0.18,Color("c8c6ab"),10)
+		_river_person(Vector3(0,0,-3.2),Color("7c8b80"),false)
+	elif id in [2,4]:
+		_boat(Vector3(3,0,-3))
+		river_souls[id]=_river_person(Vector3(-3,0,3),Color("a1b5af"),false)
+		for i in range(3): _box(_room,Vector3(-2+i*1.5,0.3,-2),Vector3(0.9,0.6,0.7),Color("6d7d78"))
+	elif id in [3,5]:
+		for i in range(5):
+			_box(_room,Vector3(-3+i*1.5,1.2,-3),Vector3(0.55,2.4,0.3),Color("aebdb7"))
+			for j in range(3): _box(_room,Vector3(-3+i*1.5,1.7-j*0.4,-2.82),Vector3(0.35,0.07,0.03),Color("3f6269"))
+		if id==3: _river_person(Vector3(2,0,1),Color("4b6269"),true)
+	else:
+		_gate(Vector3(0,0,-5),5,1.0,Color("7ca9a9"))
+		_boat(Vector3(4,0,-2))
+
+func _river_person(pos: Vector3, cloth: Color, judge: bool) -> Node3D:
+	var person:=Node3D.new()
+	_room.add_child(person)
+	person.position=pos
+	_cylinder(person,Vector3(0,0.65,0),0.24,0.4,1.3,cloth,9)
+	_sphere(person,Vector3(0,1.5,0),0.23,Color("c3c3ad"),10)
+	_cylinder(person,Vector3(0,1.74,0),0.28,0.29,0.2 if judge else 0.08,cloth,8)
+	_box(person,Vector3(0,0.95,-0.32),Vector3(0.65,0.4,0.09),Color("d4ccb1"))
+	return person
+
+func release_river_soul(id: int) -> void:
+	var soul: Node3D=river_souls.get(id)
+	if not is_instance_valid(soul): return
+	river_souls.erase(id)
+	var departure:=create_tween()
+	departure.tween_property(soul,"position",soul.position+Vector3(4,0,-3),2.5)
+	departure.tween_property(soul,"scale",Vector3.ONE*0.02,0.8)
+	departure.tween_callback(soul.queue_free)
+
+func decorate_river_actor(actor: Node3D, kind: String) -> void:
+	var body: Node3D=actor.get_node_or_null("Body")
+	if not body: body=actor
+	for mesh in body.find_children("*","MeshInstance3D",true,false):
+		var material: Material=mesh.material_override
+		if material is StandardMaterial3D and material.albedo_color.r>material.albedo_color.g*1.3:
+			var ink: StandardMaterial3D=material.duplicate()
+			ink.albedo_color=Color("365a6a")
+			mesh.material_override=ink
+		elif material is ShaderMaterial and material.shader==INK_SHADER:
+			var pigment: Color=material.get_shader_parameter("ink_color")
+			if pigment.r>pigment.g*1.3:
+				var river_ink: ShaderMaterial=material.duplicate()
+				river_ink.set_shader_parameter("ink_color",Color("365a6a"))
+				mesh.material_override=river_ink
+	if kind=="boss":
+		var weapon: Node3D=actor.find_child("Weapon",true,false)
+		if weapon: weapon.hide()
+		_box(body,Vector3(0,1.53,-0.27),Vector3(0.37,0.48,0.07),Color("e0dbbf"))
+		_box(body,Vector3(0,1.98,0),Vector3(1.2,0.14,0.28),Color("263f48"))
+		_beam(body,Vector3(0.6,0.4,-0.2),Vector3(0.6,2.4,-0.2),0.055,Color("71969a"))
+		_cylinder(body,Vector3(0.6,0.26,-0.2),0.02,0.12,0.4,Color("d8d3b9"),8)
+		_box(body,Vector3(-0.6,1.0,-0.2),Vector3(0.65,0.7,0.12),Color("bcb89f"))
+	else:
+		_box(body,Vector3(0,1.45,-0.30),Vector3(0.22,0.45,0.045),Color("a8d1c9"))

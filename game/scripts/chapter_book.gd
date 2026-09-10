@@ -15,6 +15,7 @@ var reading: ScrollContainer
 
 class Leaf extends Control:
 	var lotus: bool = false
+	var river: bool = false
 	func _draw() -> void:
 		var r := Rect2(Vector2(18,18),size-Vector2(36,36))
 		draw_rect(r,Color("e8ddbd"))
@@ -24,7 +25,12 @@ class Leaf extends Control:
 			draw_circle(Vector2(35,y),3,Color("675540"))
 		var c := Vector2(size.x-120,size.y*0.52)
 		var tint := Color(0.45,0.30,0.22,0.22)
-		if lotus:
+		if river:
+			draw_rect(Rect2(c-Vector2(40,55),Vector2(80,110)),tint,false,3)
+			for i in range(5): draw_line(c+Vector2(-25,-35+i*18),c+Vector2(20,-35+i*18),tint,2)
+			draw_line(c+Vector2(30,-70),c+Vector2(-25,65),tint,5)
+			for i in range(3): draw_arc(c+Vector2(0,60+i*12),70,0.1,PI-0.1,32,tint,2,true)
+		elif lotus:
 			for i in range(8):
 				var a: float=i*TAU/8
 				draw_arc(c+Vector2(cos(a),sin(a))*28,33,0,TAU,40,tint,2,true)
@@ -46,6 +52,7 @@ func open(chapter: int, content: Array, ui_theme: Theme) -> void:
 	add_child(shade)
 	var leaf:=Leaf.new()
 	leaf.lotus=chapter==2
+	leaf.river=chapter==3
 	leaf.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	shade.add_child(leaf)
 	ink=Control.new()
