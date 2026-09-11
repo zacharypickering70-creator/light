@@ -99,6 +99,17 @@
     "bytes": 241664
   },
   {
+    "file": "boss_debt.glb",
+    "triangles": 2354,
+    "mesh_parts": 8,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 290424
+  },
+  {
     "file": "dummy.glb",
     "triangles": 1698,
     "mesh_parts": 7,
@@ -178,5 +189,12 @@
     "mesh_parts": 1,
     "clips": [],
     "bytes": 23660
+  },
+  {
+    "file": "debt_scale.glb",
+    "triangles": 116,
+    "mesh_parts": 1,
+    "clips": [],
+    "bytes": 14948
   }
 ]

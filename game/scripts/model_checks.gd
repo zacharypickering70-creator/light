@@ -6,7 +6,7 @@ func check(value: bool, reason: String):
 func run():
  var library=load("res://scripts/model_library.gd")
  var inventory=JSON.parse_string(FileAccess.get_file_as_string("res://assets/models/inventory.json"))
- check(inventory.size()==20,"twenty original assets")
+ check(inventory.size()==22,"twenty-two original assets")
  for entry in inventory:
   var packed: PackedScene=load("res://assets/models/"+entry["file"])
   var model=packed.instantiate()
@@ -23,7 +23,7 @@ func run():
    var animation=model.get_node("AnimationPlayer")
    check(animation.has_animation("Walk") and animation.has_animation("Attack") and animation.has_animation("Idle"),"editable animation clips")
   model.free()
- for chapter in range(1,6):
+ for chapter in range(1,7):
   var model=library.actor("boss",chapter)
   root.add_child(model)
   check(model.get_meta("original_model")==library.BOSSES[chapter-1],"unique chapter boss")
@@ -73,6 +73,6 @@ func run():
  check(g.state=="dying","new model death starts")
  g._complete_death()
  check(not g.journey_started and g.state=="result","new model returns home")
- if failures.is_empty(): print("MODELS12_PASS: 20 assets, mesh budgets, clips, five bosses, sockets, weapons, robes, motion, 65 shared models, recoil, death")
+ if failures.is_empty(): print("MODELS12_PASS: 22 assets, mesh budgets, clips, six bosses, sockets, weapons, robes, motion, 65 shared models, recoil, death")
  else: print("MODELS12_FAIL: ",failures)
  quit(0 if failures.is_empty() else 1)

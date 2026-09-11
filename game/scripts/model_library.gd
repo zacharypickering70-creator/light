@@ -4,10 +4,10 @@ const INK=preload("res://assets/models/model_ink.gdshader")
 static var shared_ink: ShaderMaterial
 
 const ROOT="res://assets/models/"
-const BOSSES=["boss_ferry","boss_wish","boss_judge","boss_erlang","boss_master"]
+const BOSSES=["boss_ferry","boss_wish","boss_judge","boss_erlang","boss_master","boss_debt"]
 
 static func actor(kind: String, chapter: int=1) -> Node3D:
-	var id: String=BOSSES[clampi(chapter-1,0,4)] if kind=="boss" else kind
+	var id: String=BOSSES[clampi(chapter-1,0,5)] if kind=="boss" else kind
 	var scene: PackedScene=load(ROOT+id+".glb")
 	var imported: Node3D=scene.instantiate()
 	var model: Node3D=imported.get_node(id)

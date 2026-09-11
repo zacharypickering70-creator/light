@@ -1,4 +1,4 @@
-# 烬灯行 0.12.0
+# 烬灯行 0.13.0
 
 安卓水墨动作肉鸽可玩原型。Godot 4.7.2 打开 project.godot。
 
@@ -15,3 +15,5 @@
 第五章莲心台与三结局已实现，详见 docs/第五章莲心台.md。专项检查：--script res://scripts/chapter_five_checks.gd。
 
 原创模型见 docs/原创模型说明.md；资产位于 assets/models，建模源位于 art_source。检查入口：--script res://scripts/model_checks.gd。
+
+第六章城隍夜簿已实现，详见 docs/第六章城隍夜簿.md。专项检查：--script res://scripts/chapter_six_checks.gd。

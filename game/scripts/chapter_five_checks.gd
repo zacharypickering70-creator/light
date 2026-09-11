@@ -140,7 +140,7 @@ func run() -> void:
 		g._on_action("ending_open")
 	g._advance_stage()
 	await process_frame
-	check(g.stage_depth==6 and g.chapter==5 and g._chapter_name().contains("愿境深处"),"poststory endless realm")
+	check(g.stage_depth==6 and g.chapter==6 and g._chapter_name()=="城隍夜簿","sixth chapter route")
 	check(not is_instance_valid(old_scene),"old phase scene removed on transition")
 	g._finish_run(true)
 	check(g.state=="transition","later realms do not repeat ending choice")

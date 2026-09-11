@@ -127,6 +127,12 @@ def weapon(kind):
   m.tube([(0,0,.28),(0,0,-1.25)],[.06,.06],WOOD,8)
   m.blade([(-.05,-.75),(-.57,-.66),(-.74,-.86),(-.78,-1.2),(-.54,-1.43),(-.04,-1.28),(.22,-1.22),(.3,-.94)],.11,col('aebbb1'),SILVER)
   m.blade([(-.52,-.75),(-.65,-.91),(-.66,-1.17),(-.5,-1.31),(-.40,-1.23),(-.5,-1.08)],.116,GOLD)
+ elif kind=='debt_scale':
+  m.tube([(0,0,.2),(0,0,-1.25)],[.06,.045],WOOD,8)
+  m.tube([(-.6,0,-1.25),(.6,0,-1.25)],[.05,.05],GOLD,6)
+  for side in [-1,1]:
+   m.tube([(side*.5,0,-1.25),(side*.5,-.4,-1.25)],[.015,.015],GOLD,5)
+   pan=Mesh();pan.blade([(side*.5-.22,-1.1),(side*.5-.25,-1.35),(side*.5,-1.5),(side*.5+.25,-1.35),(side*.5+.22,-1.1)],.07,PALE);pan.translate((0,-.4,0));m.p.extend(pan.p);m.n.extend(pan.n);m.c.extend(pan.c)
  elif kind=='wish_scepter':
   m.tube([(0,0,.15),(0,0,-1.25)],[.05,.05],GOLD,8)
   for i in range(5):
@@ -154,7 +160,7 @@ def ring(m,center,radius,color,n=24,thickness=.025):
 def character(kind):
  g=GLB(kind);body=g.node('Body')
  boss=kind.startswith('boss_');player=kind=='player';brute=kind=='brute'
- cloth={'player':'c1c5b5','grunt':'59645b','ranger':'486d77','brute':'544b48','boss_ferry':'4e686b','boss_wish':'a05a63','boss_judge':'38545e','boss_erlang':'547d7b','boss_master':'9e8861','dummy':'887450'}[kind]
+ cloth={'player':'c1c5b5','grunt':'59645b','ranger':'486d77','brute':'544b48','boss_ferry':'4e686b','boss_wish':'a05a63','boss_judge':'38545e','boss_erlang':'547d7b','boss_master':'9e8861','boss_debt':'666f58','dummy':'887450'}[kind]
  cloth=col(cloth);width=1.2 if brute else (.92 if kind=='boss_wish' else 1)
  coat=Mesh();detail=Mesh();cape=Mesh()
  coat.loft([(.32,.34*width,.24,0,.05),(.68,.29*width,.21,0,.02),(.96,.22*width,.18,0,0),(1.27,.30*width,.20,0,0),(1.39,.24*width,.16,0,0)],cloth,12,.10)
@@ -213,6 +219,15 @@ def character(kind):
   detail.ellipsoid((0,1.59,-.145),(.19,.19,.075),col('bacfc9'),10,6)
   detail.ribbon([(0,1.78,-.235),(0,1.52,-.24),(0,1.3,-.18)],[.028,.018,.008],INK)
   cape.ribbon([(0,1.38,.2),(0,.85,.42),(0,.14,.32)],[.27,.42,.32],INK)
+ elif kind=='boss_debt':
+  detail.loft([(1.78,.27,.22,0,0),(2.15,.29,.21,0,.03),(2.22,.22,.17,0,.03)],INK,8)
+  for side in [-1,1]:
+   detail.tube([(side*.24,1.95,.03),(side*.52,1.88,.04)],[.08,.05],GOLD,6)
+  for row in range(4):
+   for x in [-.22,-.07,.08,.23]:detail.ellipsoid((x,1.03+row*.11,-.24),(.062,.041,.043),GOLD,5,4)
+  for side in [-1,1]:
+   cape.ribbon([(side*.24,1.39,.2),(side*.42,.85,.30),(side*.36,.2,.23)],[.12,.17,.11],PALE)
+  detail.ribbon([(0,1.80,-.21),(0,1.51,-.22),(0,1.33,-.20)],[.06,.05,.025],RED)
  elif kind=='boss_erlang':
   detail.loft([(1.76,.21,.18,0,0),(1.96,.19,.14,0,0),(2.1,.02,.03,0,0)],SILVER,12)
   for side in [-1,1]:
@@ -244,7 +259,7 @@ def character(kind):
   a=g.node(name+'Arm',body,(side*.32*width,1.31,0),arm)
   if side==1:
    grip=g.node('Grip',a,(side*.18,-.46,-.15));wn=g.node('Weapon',grip)
-   wk={'player':'ferry_blade','grunt':'ferry_blade','ranger':'wish_scepter','brute':'heavy_cleaver','boss_ferry':'oar','boss_wish':'wish_scepter','boss_judge':'judge_tablet','boss_erlang':'trident','boss_master':'brush','dummy':'iron_staff'}[kind]
+   wk={'player':'ferry_blade','grunt':'ferry_blade','ranger':'wish_scepter','brute':'heavy_cleaver','boss_ferry':'oar','boss_wish':'wish_scepter','boss_judge':'judge_tablet','boss_erlang':'trident','boss_master':'brush','boss_debt':'debt_scale','dummy':'iron_staff'}[kind]
    g.node('HeldMesh',wn,mesh=weapon(wk))
  if boss:g.j['nodes'][0]['scale']=[1.68,1.60,1.68]
  elif brute:g.j['nodes'][0]['scale']=[1.25,1.15,1.25]
@@ -255,9 +270,9 @@ def character(kind):
 
 if __name__=='__main__':
  report=[]
- for kind in ['player','grunt','ranger','brute','boss_ferry','boss_wish','boss_judge','boss_erlang','boss_master','dummy']:
+ for kind in ['player','grunt','ranger','brute','boss_ferry','boss_wish','boss_judge','boss_erlang','boss_master','boss_debt','dummy']:
   report.append(character(kind).save(kind))
- for kind in ['ferry_blade','long_sword','long_spear','iron_staff','heavy_cleaver','oar','wish_scepter','judge_tablet','trident','brush']:
+ for kind in ['ferry_blade','long_sword','long_spear','iron_staff','heavy_cleaver','oar','wish_scepter','judge_tablet','trident','brush','debt_scale']:
   g=GLB(kind);g.node('BladeMesh',mesh=weapon(kind));report.append(g.save(kind))
  (OUT/'inventory.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
  for row in report:print(row['file'],row['triangles'],'triangles',row['mesh_parts'],'parts')

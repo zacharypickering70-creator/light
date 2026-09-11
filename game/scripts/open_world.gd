@@ -103,6 +103,7 @@ func generate_layout(value: int) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for i in range(7):
 		var names: Array=preload("res://scripts/chapter_three.gd").NAMES if chapter==3 else (SHRINE_NAMES if chapter==2 else LANDMARK_NAMES)
+		if chapter==6: names=preload("res://scripts/chapter_six.gd").NAMES
 		if chapter==5: names=preload("res://scripts/chapter_five.gd").NAMES
 		if chapter==4: names=preload("res://scripts/chapter_four.gd").NAMES
 		result.append({"id":i, "name":names[i], "pos":points[i], "visited":i==0})
@@ -183,7 +184,9 @@ func build_map(value: int, preview: bool = false) -> void:
 		root_art.add_child(region)
 		_room = region
 		var id: int = landmark["id"]
-		if chapter==5:
+		if chapter==6:
+			_city_region(id)
+		elif chapter==5:
 			_final_region(id)
 		elif chapter==4:
 			_mountain_region(id)
@@ -566,3 +569,23 @@ func show_final_phase(phase: int, center: Vector3) -> void:
 		for side in [-1,1]:
 			for i in range(4): _tree(Vector3(side*10,0,i*4-3),side,1.1)
 	_room=saved_room
+
+func _city_region(id: int) -> void:
+	_cylinder(_room,Vector3(0,0.025,0),8,8,0.06,Color("aeb4a0"),36)
+	for side in [-1,1]:
+		_gate(Vector3(side*7,0,-3),3.2,0.8,Color("7b715d"))
+		_lantern_small(_room,Vector3(side*5,1.6,2),Color("c2d5bb"),0.9)
+	if id==6:
+		_pavilion(Vector3(0,0,-6),1.2)
+		_box(_room,Vector3(0,0.8,-3),Vector3(5.5,0.25,1.2),Color("645e4c"))
+		for i in range(5): _box(_room,Vector3(-2+i,1.01,-3),Vector3(0.5,0.12,0.8),Color("c4bb98"))
+		_torus(_room,Vector3(0,0.15,2),4.1,4.2,Color("c2aa79"),Vector3.ZERO)
+	elif id in [2,4]:
+		_pavilion(Vector3(0,0,-4),0.8)
+		_box(_room,Vector3(-3,0.6,3),Vector3(1.5,0.15,0.7),Color("827558"))
+		for i in range(3): _box(_room,Vector3(-3.4+i*.4,0.72,3),Vector3(.3,.03,.45),Color("d1c59d"))
+	elif id in [3,5]:
+		_box(_room,Vector3(0,1.5,-3),Vector3(2.3,3,0.6),Color("7f8876"))
+		for i in range(6): _box(_room,Vector3(0,2.6-i*.4,-2.68),Vector3(1.4,.08,.03),Color("d5c59d"))
+	else:
+		for side in [-1,1]: _pavilion(Vector3(side*5,0,3),0.65)

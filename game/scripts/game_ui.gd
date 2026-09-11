@@ -277,7 +277,14 @@ func _build_hud() -> void:
 	_boss_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_boss_box.add_theme_constant_override("separation", 8)
 	_combat.add_child(_boss_box)
-	_boss_label = _label("", 22, PAPER)
+	_boss_label = _label("", 22, INK)
+	_boss_label.add_theme_color_override("font_outline_color",Color("192420"))
+	_boss_label.add_theme_constant_override("outline_size",4)
+	var boss_plate:=StyleBoxFlat.new()
+	boss_plate.bg_color=Color(0.10,0.14,0.12,0.9)
+	boss_plate.content_margin_top=3
+	boss_plate.content_margin_bottom=3
+	_boss_label.add_theme_stylebox_override("normal",boss_plate)
 	_boss_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_boss_box.add_child(_boss_label)
 	_boss_bar = _bar(RED, 7)
