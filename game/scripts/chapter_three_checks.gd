@@ -122,7 +122,7 @@ func run() -> void:
 	check(g.state=="transition","closing book offers continue and home")
 	g.test_mode=true
 	g._advance_stage()
-	check(g.stage_depth==4 and g.chapter==3 and g._chapter_name().contains("愿境深处"),"later maps retain continuous mode")
+	check(g.stage_depth==4 and g.chapter==4 and g._chapter_name()=="华山照影","fourth chapter follows third")
 	g._finish_run(true)
 	g._cash_out()
 	check(not g.journey_started and g.level==1,"cashout still returns home")

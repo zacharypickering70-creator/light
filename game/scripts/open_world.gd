@@ -102,6 +102,7 @@ func generate_layout(value: int) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for i in range(7):
 		var names: Array=preload("res://scripts/chapter_three.gd").NAMES if chapter==3 else (SHRINE_NAMES if chapter==2 else LANDMARK_NAMES)
+		if chapter==4: names=preload("res://scripts/chapter_four.gd").NAMES
 		result.append({"id":i, "name":names[i], "pos":points[i], "visited":i==0})
 	return result
 
@@ -180,7 +181,9 @@ func build_map(value: int, preview: bool = false) -> void:
 		root_art.add_child(region)
 		_room = region
 		var id: int = landmark["id"]
-		if chapter==3:
+		if chapter==4:
+			_mountain_region(id)
+		elif chapter==3:
 			_river_region(id)
 		elif chapter==2:
 			_shrine_region(id)
@@ -519,3 +522,54 @@ func decorate_river_actor(actor: Node3D, kind: String) -> void:
 		_box(body,Vector3(-0.6,1.0,-0.2),Vector3(0.65,0.7,0.12),Color("bcb89f"))
 	else:
 		_box(body,Vector3(0,1.45,-0.30),Vector3(0.22,0.45,0.045),Color("a8d1c9"))
+
+func _mountain_region(id: int) -> void:
+	_cylinder(_room,Vector3(0,0.02,0),8,8,0.08,Color("bfc6bd"),40)
+	for side in [-1,1]:
+		_cylinder(_room,Vector3(side*9,3.5,-6),0.15,2.5,7,Color("667c75"),5)
+		_cylinder(_room,Vector3(side*9,7.3,-6),0,1.2,2.6,Color("d9ded4"),5)
+		_tree(Vector3(side*7,0,5),side,1.1)
+		_banner(Vector3(side*5.8,0,2),side,Color("a4b1ab"))
+	if id==6:
+		_cylinder(_room,Vector3(0,0.08,0),5.4,5.4,0.15,Color("566963"),32)
+		_torus(_room,Vector3(0,0.19,0),4.8,4.9,Color("d3c69d"),Vector3.ZERO)
+		for i in range(8):
+			var a: float=i*TAU/8
+			var p:=Vector3(cos(a)*6,1.25,sin(a)*6)
+			_box(_room,p,Vector3(0.7,2.5,0.7),Color("bcc6bd"))
+			_sphere(_room,p+Vector3.UP*1.45,0.18,Color("d8cb9d"),8)
+	elif id in [2,4]:
+		_pavilion(Vector3(0,0,-4),0.9)
+		_torus(_room,Vector3(-3,0.08,3),1.4,1.5,Color("bba677"),Vector3.ZERO)
+		_lantern_small(_room,Vector3(-3,1.5,3),Color("d9c88f"),1.0)
+	elif id in [3,5]:
+		_box(_room,Vector3(0,1.8,-3),Vector3(1.6,3.6,0.65),Color("809088"))
+		for i in range(6): _box(_room,Vector3(0,2.8-i*0.4,-2.65),Vector3(0.8,0.1,0.03),Color("d8d6bd"))
+	else:
+		_gate(Vector3(0,0,-5),5.5,1.1,Color("a2a38f"))
+		for i in range(3): _box(_room,Vector3(0,0.07,-2+i*1.3),Vector3(4,0.14,0.8),Color("c4c9bd"))
+
+func decorate_mountain_actor(actor: Node3D, kind: String) -> void:
+	var body: Node3D=actor.get_node_or_null("Body")
+	if not body: body=actor
+	for mesh in body.find_children("*","MeshInstance3D",true,false):
+		var material: Material=mesh.material_override
+		if material is ShaderMaterial and material.shader==INK_SHADER:
+			var color: Color=material.get_shader_parameter("ink_color")
+			if color.r>color.g*1.3:
+				var silver: ShaderMaterial=material.duplicate()
+				silver.set_shader_parameter("ink_color",Color("9badab"))
+				mesh.material_override=silver
+	if kind=="boss":
+		var weapon: Node3D=actor.find_child("Weapon",true,false)
+		if weapon: weapon.hide()
+		for mesh in body.get_children():
+			if mesh is MeshInstance3D and mesh.position.y>1.8: mesh.hide()
+		_box(body,Vector3(0,1.69,-0.23),Vector3(0.07,0.19,0.035),Color("f5d58d"),1)
+		_cylinder(body,Vector3(0,1.87,0),0.09,0.21,0.3,Color("bdc9c4"),8)
+		_beam(body,Vector3(0.67,0.05,-0.28),Vector3(0.67,2.65,-0.28),0.045,Color("798f8d"))
+		for i in [-1,0,1]:
+			_beam(body,Vector3(0.67,2.4,-0.28),Vector3(0.67+i*0.19,2.95-abs(i)*0.2,-0.28),0.065,Color("dce1d7"))
+		_box(body,Vector3(0,1.2,-0.31),Vector3(0.6,0.54,0.07),Color("bac9c6"))
+	else:
+		_box(body,Vector3(0,1.45,-0.3),Vector3(0.20,0.32,0.04),Color("c6d4cc"))

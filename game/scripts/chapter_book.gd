@@ -16,6 +16,7 @@ var reading: ScrollContainer
 class Leaf extends Control:
 	var lotus: bool = false
 	var river: bool = false
+	var mountain: bool = false
 	func _draw() -> void:
 		var r := Rect2(Vector2(18,18),size-Vector2(36,36))
 		draw_rect(r,Color("e8ddbd"))
@@ -25,7 +26,11 @@ class Leaf extends Control:
 			draw_circle(Vector2(35,y),3,Color("675540"))
 		var c := Vector2(size.x-120,size.y*0.52)
 		var tint := Color(0.45,0.30,0.22,0.22)
-		if river:
+		if mountain:
+			draw_polyline(PackedVector2Array([c+Vector2(-70,60),c+Vector2(-30,-40),c+Vector2(-5,0),c+Vector2(25,-75),c+Vector2(70,60)]),tint,3,true)
+			draw_arc(c+Vector2(10,-10),24,0,TAU,40,tint,2,true)
+			draw_line(c+Vector2(10,-25),c+Vector2(10,5),tint,4)
+		elif river:
 			draw_rect(Rect2(c-Vector2(40,55),Vector2(80,110)),tint,false,3)
 			for i in range(5): draw_line(c+Vector2(-25,-35+i*18),c+Vector2(20,-35+i*18),tint,2)
 			draw_line(c+Vector2(30,-70),c+Vector2(-25,65),tint,5)
@@ -53,6 +58,7 @@ func open(chapter: int, content: Array, ui_theme: Theme) -> void:
 	var leaf:=Leaf.new()
 	leaf.lotus=chapter==2
 	leaf.river=chapter==3
+	leaf.mountain=chapter==4
 	leaf.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	shade.add_child(leaf)
 	ink=Control.new()
