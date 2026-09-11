@@ -1,5 +1,6 @@
 extends Node3D
 
+const ChapterFive=preload("res://scripts/chapter_five.gd")
 const ChapterFour=preload("res://scripts/chapter_four.gd")
 const ChapterThree=preload("res://scripts/chapter_three.gd")
 const ProfileStore=preload("res://scripts/profile_store.gd")
@@ -104,6 +105,8 @@ var rescued: int=0
 var remembered: int=0
 var released_memories: int=0
 var memory_id: int=-1
+var final_voices: Array[int]=[]
+var ending_choice: String=""
 var anchored_lights: int=0
 var last_cast: String="fire"
 var varied_cast: bool=false
@@ -286,6 +289,10 @@ func _tick_game(dt: float) -> void:
 		ui.show_modal(_boss_name(), "百愿娘娘：留在福报里，就不必再失望。\n\n金圈前两秒回复生命，久留定身 1.2 秒，头顶显「定」；转红后即将炸裂。提前离圈，或用踏影解缚脱身，击败她解开愿契。" if chapter==2 else "船夫缚舟锁住了渡口。师父从这里去了上游。\n\n打败缚舟，打开渡口，继续寻找师父。", [{"id":"begin","label":"提灯迎战","detail":"躲开朱红预警，在重击后反击"}], "主线 · 解开愿契" if chapter==2 else "主线 · 解开古渡的锁")
 		if chapter==3:
 			ui.show_modal("无名判影","判影：来者，报上名字。……怎么又是你？\n\n它会借用你上一次施放的技能；朱圈锁定后离开，留心蓝色判笔弹幕。轮换技能会延长它借招后的破绽。",[{"id":"begin","label":"提灯对簿"}],"主线 · 取回被借走的名字")
+		if stage_depth>5:
+			ui.show_modal("余烬愿影","卷已收，余烬仍在回响。\n击败本境愿影，可继续挑战或携香火归家。它重现落笔、愿环与直线笔锋，看到预警及时换位。",[{"id":"begin","label":"再试锋芒"}],"卷外挑战")
+		if stage_depth==5:
+			ui.show_modal("陆照川 · 守灯人","师父：你若走了，这盏灯为谁而亮？\n\n三阶段：朱圈落笔后反击；愿环可贴近青圈或退至圈外；笔锋直线锁定后向两侧闪避。",[{"id":"begin","label":"师父，请听我说"}],"终章 · 灯为谁明")
 		if chapter==4:
 			ui.show_modal("二郎显圣真君","二郎神：看清以后，还敢往前走吗？\n\n天眼初亮时三圈皆未定，显出「实」「虚」后避开实圈。朱圈落点固定；封界青色内圈仅对该招安全。",[{"id":"begin","label":"请真君赐教"}],"主线 · 照破幻相")
 		return
@@ -518,6 +525,8 @@ func _spawn_enemy(kind: String, pos: Vector3) -> Dictionary:
 		world.decorate_river_actor(node,kind)
 	elif chapter==4:
 		world.decorate_mountain_actor(node,kind)
+	elif chapter==5:
+		world.decorate_final_actor(node,kind)
 	var health: float = 34
 	var speed: float = 4.9
 	var radius: float = 0.5
@@ -608,6 +617,9 @@ func _telegraph(enemy: Dictionary) -> void:
 	var kind: String = enemy["kind"]
 	var pos: Vector3 = player.position
 	pos.y = 0
+	if kind=="boss" and chapter==5:
+		ChapterFive.telegraph(self,enemy)
+		return
 	if kind=="boss" and chapter==4:
 		ChapterFour.telegraph(self,enemy)
 		return
@@ -663,6 +675,9 @@ func _resolve_enemy_attack(enemy: Dictionary) -> void:
 	var kind: String = enemy["kind"]
 	var pos: Vector3 = enemy["target"]
 	var radius: float = enemy["attack_radius"]
+	if chapter==5 and kind=="boss":
+		ChapterFive.resolve(self,enemy)
+		return
 	if chapter==4 and kind=="boss":
 		ChapterFour.resolve(self,enemy)
 		return
@@ -806,6 +821,7 @@ func _animate_player(dt: float, direction: Vector3) -> void:
 
 func _kill_enemy(enemy: Dictionary) -> void:
 	ChapterFour.clear_marks(enemy)
+	ChapterFive.clear_marks(enemy)
 	if is_instance_valid(enemy["tell"]):
 		enemy["tell"].queue_free()
 	var node: Node3D = enemy["node"]
@@ -880,6 +896,8 @@ func _reset_journey() -> void:
 	root_ward=0
 	rescued=0
 	anchored_lights=0
+	final_voices.clear()
+	ending_choice=""
 	remembered=0
 	released_memories=0
 	last_cast="fire"
@@ -1049,7 +1067,7 @@ func _take_boon(index: int) -> void:
 
 
 func _finish_run(victory: bool) -> void:
-	if settled or not journey_started or state in ["transition","dying","chronicle","last_words"]: return
+	if settled or not journey_started or state in ["transition","dying","chronicle","last_words","ending_choice","ending_voice"]: return
 	if victory:
 		earned_incense+=35
 		if chapter==1:
@@ -1106,7 +1124,7 @@ func _advance_stage() -> void:
 	rooted_left=0
 	root_ward=0
 	stage_depth+=1
-	chapter=mini(stage_depth,4)
+	chapter=mini(stage_depth,5)
 	stage_seconds=0
 	stage_entry_level=level
 	boss_spawned=false
@@ -1114,6 +1132,8 @@ func _advance_stage() -> void:
 	story_found.clear()
 	rescued=0
 	anchored_lights=0
+	final_voices.clear()
+	ending_choice=""
 	remembered=0
 	released_memories=0
 	last_cast="fire"
@@ -1130,9 +1150,10 @@ func _advance_stage() -> void:
 		if index>0 and index<6:
 			_add_pickup("chest",region["pos"]+Vector3(1.5,0,2),index)
 			if index in [2,4]: _add_pickup("heal",region["pos"]+Vector3(4,0,-3),index)
-			if stage_depth in [2,3,4] and index in [3,5]: _add_pickup("story",region["pos"]+Vector3(-3,0,-2),index)
+			if stage_depth in [2,3,4,5] and index in [3,5]: _add_pickup("story",region["pos"]+Vector3(-3,0,-2),index)
 			if stage_depth==2 and index in [2,4]: _add_pickup("rescue",region["pos"]+Vector3(-3,0,3),index)
 			if stage_depth==3 and index in [2,4]: _add_pickup("memory",region["pos"]+Vector3(-3,0,3),index)
+			if stage_depth==5 and index in [1,2,4]: _add_pickup("voice",region["pos"]+Vector3(-3,0,3),index)
 			if stage_depth==4 and index in [2,4]: _add_pickup("anchor",region["pos"]+Vector3(-3,0,3),index)
 			if stage_depth==3 and index==1: _add_pickup("mengpo",region["pos"]+Vector3(0,0,-1),index)
 	state="playing"
@@ -1207,9 +1228,29 @@ func _show_journal() -> void:
 		body="第三章 · 击败无名判影，取回残籍。\n留名 %d / 放下 %d。亡魂与孟婆可交互；探索残籍巷、照魂碑可读线索。\n首领借用上一招，看到朱圈先换位，轮换技能可延长破绽。"%[remembered,released_memories]
 	if chapter==4:
 		body="第四章 · 与二郎神交手，取得师父旧誓。\n已稳归灯 %d / 2；照影亭和回灯崖可交互，问心石与旧誓碑可读残页。\n天眼显形后避实圈；封界时贴近青色内圈，或退至外圈之外。"%anchored_lights
+	if stage_depth==5:
+		body="第五章 · 战胜陆照川，决定灯的去留。\n已听心愿 %d / 3：灯市、长明亭、守门庭。照心池、断契碑可读残页。\n听完三种心愿解锁留门，战后可补听。避开朱圈、愿环和直线笔锋，攻击间隙反击。"%final_voices.size()
+	elif stage_depth>5:
+		body="卷外 · 余烬回响。\n继续挑战更强敌群；本次修为与装备仍保留。击败愿影后可继续或结算归家。"
 	ui.show_modal("灯中记忆",body,[{"id":"resume","label":"继续探索"}],"本局主线")
 
 func _on_action(id: String) -> void:
+	if state=="ending_voice":
+		if id=="ending_return": _show_final_choice()
+		return
+	if state=="ending_choice":
+		if id=="ending_listen":
+			for key in [1,2,4]:
+				if key not in final_voices:
+					_hear_final_voice(key,true)
+					return
+		elif id.begins_with("ending_"):
+			var choice: String=id.trim_prefix("ending_")
+			if choice not in ChapterFive.ENDINGS: return
+			if choice=="open" and final_voices.size()<3: return
+			ending_choice=choice
+			_play_chapter_book(true)
+		return
 	if state=="last_words":
 		if id=="words_next": _next_last_words()
 		elif id=="words_skip":
@@ -1530,7 +1571,7 @@ func _add_pickup(kind: String, pos: Vector3, id: int) -> void:
 	pickups.append({"kind":kind,"pos":pos,"id":id,"used":false,"node":node})
 
 func _pickup_name(kind: String) -> String:
-	return {"chest":"拾取遗珍","story":"阅读灯签","heal":"取用清露","forge":"炉台 · 锻造","rack":"兵器架 · 换装","bed":"茶桌 · 休整","manual":"藏经台 · 学武","anchor":"归灯 · 稳住裂隙","memory":"亡魂 · 问愿","mengpo":"孟婆 · 问路","rescue":"求愿者 · 唤醒","portal":"传送阵 · 选择墨境"}.get(kind,"交互")
+	return {"chest":"拾取遗珍","story":"阅读灯签","heal":"取用清露","forge":"炉台 · 锻造","rack":"兵器架 · 换装","bed":"茶桌 · 休整","manual":"藏经台 · 学武","voice":"灯中人 · 听心愿","anchor":"归灯 · 稳住裂隙","memory":"亡魂 · 问愿","mengpo":"孟婆 · 问路","rescue":"求愿者 · 唤醒","portal":"传送阵 · 选择墨境"}.get(kind,"交互")
 
 func _nearby_pickup() -> Dictionary:
 	var best: Dictionary={}
@@ -1572,6 +1613,8 @@ func _interact() -> void:
 	pickup["used"]=true
 	pickup["node"].hide()
 	match pickup["kind"]:
+		"voice":
+			_hear_final_voice(int(pickup["id"]),false)
 		"anchor":
 			anchored_lights+=1
 			study_points+=1
@@ -1603,6 +1646,7 @@ func _interact() -> void:
 				fragment="庙祝愿簿：灾后第一年，百愿娘娘替人收殓亡者；第二年，她收走噩梦；第三年，连悲伤、失望与拒绝都写进愿契。末行被朱砂涂去——离开的念头。香客仍在叩首，却已忘记自己求的是什么。" if pickup["id"]==3 else "陆照川手札：三圣母的灯本为照路，我却用它留人。我替她续过灯芯，知道愿契收走了什么。可那孩子的命也系在灯中……我总说等修好灯就放手，却一天也不敢让灯熄灭。"
 			if chapter==3: fragment=ChapterThree.FRAGMENTS[pickup["id"]]
 			if chapter==4: fragment=ChapterFour.FRAGMENTS[pickup["id"]]
+			if chapter==5: fragment=ChapterFive.FRAGMENTS[pickup["id"]]
 			ui.show_modal("灯中残页",fragment,[{"id":"begin","label":"收好残页"}],"主线碎片 %d / 2"%story_found.size())
 		"heal":
 			hp=minf(max_hp,hp+45)
@@ -2315,10 +2359,11 @@ func _save_audio(path: String="user://audio.cfg") -> void:
 	if config.save(path)!=OK: ui.toast("声音设置保存失败")
 
 func _chapter_name() -> String:
-	return "愿境深处 · 第%d境"%stage_depth if stage_depth>4 else {1:"雾隐渡",2:"听愿祠",3:"忘川旧市",4:"华山照影"}[chapter]
+	return "愿境深处 · 第%d境"%stage_depth if stage_depth>5 else {1:"雾隐渡",2:"听愿祠",3:"忘川旧市",4:"华山照影",5:"莲心台"}[chapter]
 
 func _boss_name() -> String:
-	return {1:"镇渡使 · 缚舟",2:"百愿娘娘",3:"无名判影",4:"二郎显圣真君"}[chapter]
+	if stage_depth>5: return "余烬愿影"
+	return {1:"镇渡使 · 缚舟",2:"百愿娘娘",3:"无名判影",4:"二郎显圣真君",5:"陆照川 · 守灯人"}[chapter]
 
 func _spawn_blessing(pos: Vector3) -> void:
 	if blessings.size()>=3:
@@ -2395,6 +2440,9 @@ func _lamp_cast_effect() -> void:
 
 func _show_stage_result() -> void:
 	state="transition"
+	if stage_depth==5:
+		ui.show_modal("主线收卷 · "+ChapterFive.ENDINGS[ending_choice][0],"本次故事结局已写定。\n归家：带回全部本次香火，结束此行。\n回响：保留当前成长，挑战更强的卷外愿影，不改写结局。",[{"id":"continue_stage","label":"挑战余烬回响","detail":"保留状态，继续更强的随机战斗"},{"id":"cash_out","label":"收卷归家","detail":"带回全部本次香火"}],"终章结算")
+		return
 	ui.show_modal("墨境已破 · 去留由你","继续：保留血量、装备、技能与成长，下一境更强。\n归家：带回全部本次香火，结束此行并清空局内成长。",[{"id":"continue_stage","label":"继续闯关","detail":"保持当前状态进入下一境"},{"id":"cash_out","label":"见好就收 · 回家","detail":"带回全部本次香火"}],"通关抉择")
 
 
@@ -2417,8 +2465,9 @@ func _update_root_mark() -> void:
 	root_mark.visible=rooted_left>0
 
 func _chapter_pages(ending: bool) -> Array:
-	if stage_depth>4:
+	if stage_depth>5:
 		return [{"title":"愿境深处 · 第%d境"%stage_depth,"text":"又一重愿契在灯前散开。带着走过的路，继续向前。" if ending else "灯照向尚未醒来的愿境。旧愿重聚，来敌更强；保住这一程修为，击破镇守此境的愿影。"}]
+	if chapter==5: return ChapterFive.pages(ending,ending_choice)
 	if chapter==4: return ChapterFour.pages(ending,anchored_lights)
 	if chapter==3: return ChapterThree.pages(ending,remembered,released_memories)
 	if chapter==1:
@@ -2439,6 +2488,9 @@ func _chapter_pages(ending: bool) -> Array:
 		{"title":"陆照川手札 · 灯中之命","text":"殿后的灯座刻着师父的名字。他并非误入此地，而是亲手续过这盏留人的灯。\n手札末页写着：那孩子的命系在灯中。我以为留住一条命，就能偿还从前。可这些被我留下的人，又该由谁偿还？\n页缝夹着一张写有「忘川」的引路签。寻找师父，已不只是把他带回家。"}]
 
 func _play_chapter_book(ending: bool) -> void:
+	if ending and stage_depth==5 and ending_choice.is_empty():
+		_show_final_choice()
+		return
 	if test_mode or capture_mode:
 		if ending: _show_stage_result()
 		return
@@ -2468,13 +2520,13 @@ func _begin_last_words(force: bool=false) -> void:
 	_show_last_words_line()
 
 func _show_last_words_line() -> void:
-	var lines: Array=ChapterFour.dialogue() if stage_depth==4 else ChapterThree.last_words(chapter if stage_depth<=3 else 4)
+	var lines: Array=ChapterFive.dialogue() if stage_depth==5 else (ChapterFour.dialogue() if stage_depth==4 else ChapterThree.last_words(chapter if stage_depth<=3 else 4))
 	if last_words_index>=lines.size():
 		ui._modal_description.visible_characters=-1
 		_play_chapter_book(true)
 		return
 	var line: Array=lines[last_words_index]
-	ui.show_modal(line[0],line[1],[{"id":"words_next","label":"听下去" if last_words_index<lines.size()-1 else "收好这段话"},{"id":"words_skip","label":"略过对话"}],("真君收刀 · %d / %d" if stage_depth==4 else "首领临终 · %d / %d")%[last_words_index+1,lines.size()])
+	ui.show_modal(line[0],line[1],[{"id":"words_next","label":"听下去" if last_words_index<lines.size()-1 else "收好这段话"},{"id":"words_skip","label":"略过对话"}],("灯前问答 · %d / %d" if stage_depth==5 else ("真君收刀 · %d / %d" if stage_depth==4 else "首领临终 · %d / %d"))%[last_words_index+1,lines.size()])
 	ui._modal_description.visible_characters=0
 	words_tween=create_tween()
 	words_tween.tween_property(ui._modal_description,"visible_characters",str(line[1]).length(),maxf(1.0,str(line[1]).length()*0.055))
@@ -2487,3 +2539,21 @@ func _next_last_words() -> void:
 	if words_tween: words_tween.kill()
 	last_words_index+=1
 	_show_last_words_line()
+
+func _hear_final_voice(key: int, after_battle: bool) -> void:
+	if key not in final_voices: final_voices.append(key)
+	var voice: Array=ChapterFive.VOICES[key]
+	state="ending_voice" if after_battle else "story"
+	ui.show_modal(voice[0],voice[1],[{"id":"ending_return" if after_battle else "begin","label":"记下这份心愿"}],"留门线索 · %d / 3"%final_voices.size())
+
+func _show_final_choice() -> void:
+	state="ending_choice"
+	ui.move_vector=Vector2.ZERO
+	ui.attack_held=false
+	ui.set_combat_visible(false)
+	var cards: Array=[
+		{"id":"ending_keep","label":"续灯","detail":"保住眼前的愿境，承担继续借命的代价"},
+		{"id":"ending_break","label":"破灯","detail":"停止借命，愿境与自己的借形一同散去"},
+		{"id":"ending_open","label":"留门" if final_voices.size()==3 else "留门 · 心愿 %d / 3"%final_voices.size(),"detail":"停止借命，归还名字，让去留由每个人决定","disabled":final_voices.size()<3}]
+	if final_voices.size()<3: cards.append({"id":"ending_listen","label":"听灯中人说完","detail":"补听尚未听过的心愿，再作决定"})
+	ui.show_modal("灯为谁明","三圣母：看清每条路的代价，再给出你的回答。\n这次选择决定本次故事结局。收卷后仍可归家，或挑战卷外余烬回响。",cards,"终章抉择")

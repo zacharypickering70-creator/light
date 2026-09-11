@@ -1,4 +1,4 @@
-# 烬灯行 0.10.0
+# 烬灯行 0.11.0
 
 安卓水墨动作肉鸽可玩原型。Godot 4.7.2 打开 project.godot。
 
@@ -11,3 +11,5 @@
 第三章忘川旧市已实现，剧情和新机制见 docs/第三章忘川旧市.md。运行 --script res://scripts/chapter_three_checks.gd 检查新章与首领临终对话。
 
 第四章华山照影已实现，详见 docs/第四章华山照影.md。专项检查：--script res://scripts/chapter_four_checks.gd。
+
+第五章莲心台与三结局已实现，详见 docs/第五章莲心台.md。专项检查：--script res://scripts/chapter_five_checks.gd。

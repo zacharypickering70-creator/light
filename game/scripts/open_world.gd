@@ -4,6 +4,7 @@ const INK_SHADER = preload("res://assets/ink.gdshader")
 const GROUND_SHADER = preload("res://assets/paper_ground.gdshader")
 const LANDMARK_NAMES = ["落灯坪", "风竹林", "听雨亭", "无声渡", "枯荷汀", "归墨碑", "镇渡台"]
 var chapter: int=1
+var final_scene: Node3D
 const SHRINE_NAMES=["祈愿门","香客林","解签亭","万愿廊","醒梦池","无字碑","听愿正殿"]
 var landmarks: Array[Dictionary] = []
 var obstacles: Array[Dictionary] = []
@@ -102,6 +103,7 @@ func generate_layout(value: int) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for i in range(7):
 		var names: Array=preload("res://scripts/chapter_three.gd").NAMES if chapter==3 else (SHRINE_NAMES if chapter==2 else LANDMARK_NAMES)
+		if chapter==5: names=preload("res://scripts/chapter_five.gd").NAMES
 		if chapter==4: names=preload("res://scripts/chapter_four.gd").NAMES
 		result.append({"id":i, "name":names[i], "pos":points[i], "visited":i==0})
 	return result
@@ -181,7 +183,9 @@ func build_map(value: int, preview: bool = false) -> void:
 		root_art.add_child(region)
 		_room = region
 		var id: int = landmark["id"]
-		if chapter==4:
+		if chapter==5:
+			_final_region(id)
+		elif chapter==4:
 			_mountain_region(id)
 		elif chapter==3:
 			_river_region(id)
@@ -573,3 +577,78 @@ func decorate_mountain_actor(actor: Node3D, kind: String) -> void:
 		_box(body,Vector3(0,1.2,-0.31),Vector3(0.6,0.54,0.07),Color("bac9c6"))
 	else:
 		_box(body,Vector3(0,1.45,-0.3),Vector3(0.20,0.32,0.04),Color("c6d4cc"))
+
+func _final_region(id: int) -> void:
+	_cylinder(_room,Vector3(0,0.025,0),8,8,0.08,Color("cbbd9d"),40)
+	for i in range(8):
+		var a: float=i*TAU/8
+		var p:=Vector3(cos(a)*6.8,0,sin(a)*6.8)
+		_lantern_small(_room,p+Vector3.UP*1.6,Color("e1ba70"),0.9)
+	if id==6:
+		_cylinder(_room,Vector3(0,0.09,0),5.6,5.6,0.15,Color("765f59"),40)
+		for i in range(8):
+			var a: float=i*TAU/8
+			var petal:=_sphere(_room,Vector3(cos(a)*3.7,0.13,sin(a)*3.7),1.2,Color("b99784"),12)
+			petal.scale=Vector3(1,0.10,1.8)
+			petal.rotation.y=-a+PI/2
+		_torus(_room,Vector3(0,0.21,0),4.9,5.0,Color("e1c27d"),Vector3.ZERO)
+	elif id in [1,2,4]:
+		_pavilion(Vector3(0,0,-4),0.85)
+		var person:=Node3D.new()
+		_room.add_child(person)
+		person.position=Vector3(-3,0,3)
+		_cylinder(person,Vector3(0,0.55,0),0.25,0.4,1.1,Color("7a8274"),8)
+		_sphere(person,Vector3(0,1.28,0),0.22,Color("c8b89a"),8)
+	elif id in [3,5]:
+		_box(_room,Vector3(0,1.2,-3),Vector3(2.2,2.4,0.6),Color("8b8b76"))
+		for i in range(5): _box(_room,Vector3(0,2.0-i*0.35,-2.68),Vector3(1.2,0.08,0.03),Color("e0cda5"))
+	else:
+		_gate(Vector3(0,0,-5),6,1.2,Color("9e705a"))
+		for side in [-1,1]: _tree(Vector3(side*6,0,3),side,1.0)
+
+func decorate_final_actor(actor: Node3D, kind: String) -> void:
+	var body: Node3D=actor.get_node_or_null("Body")
+	if not body: body=actor
+	for mesh in body.find_children("*","MeshInstance3D",true,false):
+		var material: Material=mesh.material_override
+		if material is ShaderMaterial and material.shader==INK_SHADER:
+			var original: Color=material.get_shader_parameter("ink_color")
+			if original.r>original.g*1.3:
+				var robe: ShaderMaterial=material.duplicate()
+				robe.set_shader_parameter("ink_color",Color("b6a77d") if kind=="boss" else Color("998b78"))
+				mesh.material_override=robe
+	if kind=="boss":
+		var weapon: Node3D=actor.find_child("Weapon",true,false)
+		if weapon: weapon.hide()
+		for mesh in body.get_children():
+			if mesh is MeshInstance3D and mesh.position.y>1.8: mesh.hide()
+		_cylinder(body,Vector3(0,1.89,0),0.15,0.2,0.2,Color("575449"),8)
+		_beam(body,Vector3(0.68,0.15,-0.2),Vector3(0.68,2.3,-0.2),0.065,Color("705744"))
+		_cylinder(body,Vector3(0.68,2.5,-0.2),0,0.14,0.4,Color("d4c9ab"),8)
+		_lantern_small(body,Vector3(-0.65,1.0,-0.1),Color("e3b96e"),0.65)
+
+func show_final_phase(phase: int, center: Vector3) -> void:
+	if is_instance_valid(final_scene): final_scene.queue_free()
+	final_scene=Node3D.new()
+	add_child(final_scene)
+	final_scene.position=center
+	final_scene.position.y=0
+	var saved_room: Node3D=_room
+	_room=final_scene
+	if phase==1:
+		for side in [-1,1]:
+			_box(_room,Vector3(side*9,0.08,0),Vector3(1.0,0.05,12),Color("8a5549"))
+	elif phase==2:
+		for i in range(6):
+			var a: float=i*TAU/6
+			var p:=Vector3(cos(a)*9,0,sin(a)*9)
+			_cylinder(_room,p+Vector3.UP*0.7,0.25,0.45,1.4,Color("919d94"),8)
+			_sphere(_room,p+Vector3.UP*1.6,0.23,Color("c0c5b2"),8)
+			_lantern_small(_room,p+Vector3(0.5,1,0),Color("b3d0c0"),0.6)
+	else:
+		_box(_room,Vector3(0,0.05,0),Vector3(17,0.05,17),Color("b8b396"))
+		_gate(Vector3(0,0,-9),6,1.1,Color("787d62"))
+		_pavilion(Vector3(-10,0,-5),0.9)
+		for side in [-1,1]:
+			for i in range(4): _tree(Vector3(side*10,0,i*4-3),side,1.1)
+	_room=saved_room

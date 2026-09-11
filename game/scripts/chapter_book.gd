@@ -56,7 +56,7 @@ func open(chapter: int, content: Array, ui_theme: Theme) -> void:
 	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(shade)
 	var leaf:=Leaf.new()
-	leaf.lotus=chapter==2
+	leaf.lotus=chapter in [2,5]
 	leaf.river=chapter==3
 	leaf.mountain=chapter==4
 	leaf.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
