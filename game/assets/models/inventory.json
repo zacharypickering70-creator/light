@@ -1,0 +1,182 @@
+[
+  {
+    "file": "player.glb",
+    "triangles": 1972,
+    "mesh_parts": 8,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 244624
+  },
+  {
+    "file": "grunt.glb",
+    "triangles": 1604,
+    "mesh_parts": 7,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 199816
+  },
+  {
+    "file": "ranger.glb",
+    "triangles": 1682,
+    "mesh_parts": 8,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 209824
+  },
+  {
+    "file": "brute.glb",
+    "triangles": 2162,
+    "mesh_parts": 7,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 266788
+  },
+  {
+    "file": "boss_ferry.glb",
+    "triangles": 1924,
+    "mesh_parts": 7,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 238156
+  },
+  {
+    "file": "boss_wish.glb",
+    "triangles": 2416,
+    "mesh_parts": 8,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 297912
+  },
+  {
+    "file": "boss_judge.glb",
+    "triangles": 1674,
+    "mesh_parts": 8,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 208864
+  },
+  {
+    "file": "boss_erlang.glb",
+    "triangles": 2164,
+    "mesh_parts": 8,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 267660
+  },
+  {
+    "file": "boss_master.glb",
+    "triangles": 1948,
+    "mesh_parts": 8,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 241664
+  },
+  {
+    "file": "dummy.glb",
+    "triangles": 1698,
+    "mesh_parts": 7,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 211060
+  },
+  {
+    "file": "ferry_blade.glb",
+    "triangles": 200,
+    "mesh_parts": 1,
+    "clips": [],
+    "bytes": 25108
+  },
+  {
+    "file": "long_sword.glb",
+    "triangles": 178,
+    "mesh_parts": 1,
+    "clips": [],
+    "bytes": 22476
+  },
+  {
+    "file": "long_spear.glb",
+    "triangles": 134,
+    "mesh_parts": 1,
+    "clips": [],
+    "bytes": 17156
+  },
+  {
+    "file": "iron_staff.glb",
+    "triangles": 368,
+    "mesh_parts": 1,
+    "clips": [],
+    "bytes": 45268
+  },
+  {
+    "file": "heavy_cleaver.glb",
+    "triangles": 60,
+    "mesh_parts": 1,
+    "clips": [],
+    "bytes": 8276
+  },
+  {
+    "file": "oar.glb",
+    "triangles": 156,
+    "mesh_parts": 1,
+    "clips": [],
+    "bytes": 19760
+  },
+  {
+    "file": "wish_scepter.glb",
+    "triangles": 292,
+    "mesh_parts": 1,
+    "clips": [],
+    "bytes": 36148
+  },
+  {
+    "file": "judge_tablet.glb",
+    "triangles": 76,
+    "mesh_parts": 1,
+    "clips": [],
+    "bytes": 10196
+  },
+  {
+    "file": "trident.glb",
+    "triangles": 182,
+    "mesh_parts": 1,
+    "clips": [],
+    "bytes": 22908
+  },
+  {
+    "file": "brush.glb",
+    "triangles": 188,
+    "mesh_parts": 1,
+    "clips": [],
+    "bytes": 23660
+  }
+]

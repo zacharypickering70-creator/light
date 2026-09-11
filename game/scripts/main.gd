@@ -516,17 +516,9 @@ func _nearest_enemy(limit: float) -> Dictionary:
 	return target
 
 func _spawn_enemy(kind: String, pos: Vector3) -> Dictionary:
-	var node: Node3D = world.create_actor(kind)
+	var node: Node3D = world.create_actor(kind,chapter)
 	actors.add_child(node)
 	node.position = pos
-	if chapter==2:
-		world.decorate_wish_actor(node,kind)
-	elif chapter==3:
-		world.decorate_river_actor(node,kind)
-	elif chapter==4:
-		world.decorate_mountain_actor(node,kind)
-	elif chapter==5:
-		world.decorate_final_actor(node,kind)
 	var health: float = 34
 	var speed: float = 4.9
 	var radius: float = 0.5
@@ -578,6 +570,7 @@ func _tick_enemy(enemy: Dictionary, dt: float) -> void:
 	var diff: Vector3 = player.position - node.position
 	diff.y = 0
 	var distance: float = diff.length()
+	preload("res://scripts/model_library.gd").animate_enemy(node,start_time*9.0+float(node.get_instance_id()%37),enemy["mode"],enemy["timer"])
 	if (not journey_started or distance > 28) and not enemy.get("wave",false) and enemy["mode"] != "tell":
 		node.position = node.position.move_toward(enemy["home"], dt * 2.5)
 		return
@@ -808,6 +801,8 @@ func _animate_player(dt: float, direction: Vector3) -> void:
 	var moving: float=direction.length()
 	pose_time+=dt*(12.0 if moving>0.1 else 2.0)
 	var strike: float=sin(clampf(attack_pose/0.20,0,1)*PI)
+	var cloak: Node3D=body.get_node_or_null("Cloak")
+	if cloak: cloak.rotation.x=sin(pose_time*0.55)*0.025+moving*0.08
 	body.rotation.x=lerpf(body.rotation.x,(-0.22 if dash_left>0 else -0.07*moving)-strike*0.12,minf(1,dt*24))
 	body.rotation.y=strike*(0.32 if combo%2==0 else -0.32)
 	body.rotation.z=sin(pose_time)*0.035*moving
@@ -2117,26 +2112,7 @@ func _sfx(file: String,volume: float) -> void:
 
 func _refresh_gear_visual() -> void:
 	if not is_instance_valid(player): return
-	var weapon: Node3D=player.find_child("Weapon",true,false)
-	if weapon:
-		for child in weapon.get_children(): child.free()
-		var id: String=progress["equipped"]["blade"]
-		var tint:=Color(Arsenal.WEAPONS[id]["color"])
-		var origin:=Vector3(0.5,0.9,-0.25)
-		if id in ["long_spear","iron_staff"]:
-			world._beam(weapon,origin+Vector3(0,0,0.65),origin+Vector3(0,0,-2.0),0.05,Color("584638"))
-			if id=="long_spear":
-				world._box(weapon,origin+Vector3(0,0,-2.2),Vector3(0.15,0.05,0.5),tint)
-				world._box(weapon,origin+Vector3(0.10,0.0,-1.8),Vector3(0.32,0.045,0.32),Color("b84131"))
-			else:
-				world._box(weapon,origin+Vector3(0,0,-1.9),Vector3(0.13,0.13,0.35),tint)
-		elif id=="heavy_cleaver":
-			world._beam(weapon,origin,origin+Vector3(0,0,-1.3),0.07,Color("584638"))
-			world._box(weapon,origin+Vector3(0,0,-1.15),Vector3(0.72,0.12,0.5),tint)
-		else:
-			world._beam(weapon,origin,origin+Vector3(0,0,-0.3),0.05,Color("584638"))
-			world._box(weapon,origin+Vector3(0,0,-0.28),Vector3(0.4,0.06,0.09),Color("c2a66d"))
-			world._box(weapon,origin+Vector3(0,0,-0.95),Vector3(0.12 if id=="long_sword" else 0.24,0.06,1.25),tint)
+	preload("res://scripts/model_library.gd").equip(player,progress["equipped"]["blade"])
 	var old: Node=player.get_node_or_null("LoadoutAura")
 	if old: old.free()
 	var aura:=Node3D.new()
@@ -2144,8 +2120,7 @@ func _refresh_gear_visual() -> void:
 	player.add_child(aura)
 	var robe: String=progress["equipped"]["robe"]
 	var cloth_color:=Color(Arsenal.ROBES[robe]["color"])
-	for side in [-1.0,1.0]:
-		world._box(aura,Vector3(side*0.32,1.25,0.03),Vector3(0.25,0.14 if robe!="iron_robe" else 0.27,0.42),cloth_color)
+	preload("res://scripts/model_library.gd").robe(player,cloth_color)
 	var robe_mark:=Sprite3D.new()
 	robe_mark.texture=load("res://assets/ui/"+{"pilgrim_robe":"heal","iron_robe":"barrier","wind_robe":"haste","crimson_robe":"attack","sage_robe":"darts","lotus_robe":"ultimate"}[robe]+".svg")
 	robe_mark.billboard=BaseMaterial3D.BILLBOARD_ENABLED

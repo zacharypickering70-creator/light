@@ -436,20 +436,6 @@ func _shrine_region(id: int) -> void:
 			_box(_room,Vector3(-3+i*2,1.0,-3),Vector3(0.35,2,0.3),Color("695b47"))
 			_box(_room,Vector3(-3+i*2,1.65,-2.75),Vector3(0.55,0.65,0.035),Color("d5c497"))
 
-func decorate_wish_actor(actor: Node3D, kind: String) -> void:
-	var body: Node3D=actor.get_node_or_null("Body")
-	if not body: body=actor
-	if kind=="boss":
-		var weapon: Node3D=actor.find_child("Weapon",true,false)
-		if weapon: weapon.hide()
-		_torus(body,Vector3(0,1.65,0.25),0.85,0.92,Color("d7b367"),Vector3(PI/2,0,0))
-		for side in [-1,1]:
-			_beam(body,Vector3(side*0.4,1.2,0),Vector3(side*1.05,1.45,0),0.13,Color("a85d65"))
-			_sphere(body,Vector3(side*1.05,1.45,0),0.18,Color("e3c182"),8)
-	else:
-		_box(body,Vector3(0,1.42,-0.29),Vector3(0.24,0.39,0.035),Color("e2cc91"))
-		_box(body,Vector3(0,1.42,-0.32),Vector3(0.045,0.26,0.02),Color("9c413e"))
-
 func _river_region(id: int) -> void:
 	_cylinder(_room,Vector3(0,0.015,0),8,8,0.07,Color("8daba8"),40)
 	for side in [-1,1]:
@@ -501,32 +487,6 @@ func release_river_soul(id: int) -> void:
 	departure.tween_property(soul,"scale",Vector3.ONE*0.02,0.8)
 	departure.tween_callback(soul.queue_free)
 
-func decorate_river_actor(actor: Node3D, kind: String) -> void:
-	var body: Node3D=actor.get_node_or_null("Body")
-	if not body: body=actor
-	for mesh in body.find_children("*","MeshInstance3D",true,false):
-		var material: Material=mesh.material_override
-		if material is StandardMaterial3D and material.albedo_color.r>material.albedo_color.g*1.3:
-			var ink: StandardMaterial3D=material.duplicate()
-			ink.albedo_color=Color("365a6a")
-			mesh.material_override=ink
-		elif material is ShaderMaterial and material.shader==INK_SHADER:
-			var pigment: Color=material.get_shader_parameter("ink_color")
-			if pigment.r>pigment.g*1.3:
-				var river_ink: ShaderMaterial=material.duplicate()
-				river_ink.set_shader_parameter("ink_color",Color("365a6a"))
-				mesh.material_override=river_ink
-	if kind=="boss":
-		var weapon: Node3D=actor.find_child("Weapon",true,false)
-		if weapon: weapon.hide()
-		_box(body,Vector3(0,1.53,-0.27),Vector3(0.37,0.48,0.07),Color("e0dbbf"))
-		_box(body,Vector3(0,1.98,0),Vector3(1.2,0.14,0.28),Color("263f48"))
-		_beam(body,Vector3(0.6,0.4,-0.2),Vector3(0.6,2.4,-0.2),0.055,Color("71969a"))
-		_cylinder(body,Vector3(0.6,0.26,-0.2),0.02,0.12,0.4,Color("d8d3b9"),8)
-		_box(body,Vector3(-0.6,1.0,-0.2),Vector3(0.65,0.7,0.12),Color("bcb89f"))
-	else:
-		_box(body,Vector3(0,1.45,-0.30),Vector3(0.22,0.45,0.045),Color("a8d1c9"))
-
 func _mountain_region(id: int) -> void:
 	_cylinder(_room,Vector3(0,0.02,0),8,8,0.08,Color("bfc6bd"),40)
 	for side in [-1,1]:
@@ -552,31 +512,6 @@ func _mountain_region(id: int) -> void:
 	else:
 		_gate(Vector3(0,0,-5),5.5,1.1,Color("a2a38f"))
 		for i in range(3): _box(_room,Vector3(0,0.07,-2+i*1.3),Vector3(4,0.14,0.8),Color("c4c9bd"))
-
-func decorate_mountain_actor(actor: Node3D, kind: String) -> void:
-	var body: Node3D=actor.get_node_or_null("Body")
-	if not body: body=actor
-	for mesh in body.find_children("*","MeshInstance3D",true,false):
-		var material: Material=mesh.material_override
-		if material is ShaderMaterial and material.shader==INK_SHADER:
-			var color: Color=material.get_shader_parameter("ink_color")
-			if color.r>color.g*1.3:
-				var silver: ShaderMaterial=material.duplicate()
-				silver.set_shader_parameter("ink_color",Color("9badab"))
-				mesh.material_override=silver
-	if kind=="boss":
-		var weapon: Node3D=actor.find_child("Weapon",true,false)
-		if weapon: weapon.hide()
-		for mesh in body.get_children():
-			if mesh is MeshInstance3D and mesh.position.y>1.8: mesh.hide()
-		_box(body,Vector3(0,1.69,-0.23),Vector3(0.07,0.19,0.035),Color("f5d58d"),1)
-		_cylinder(body,Vector3(0,1.87,0),0.09,0.21,0.3,Color("bdc9c4"),8)
-		_beam(body,Vector3(0.67,0.05,-0.28),Vector3(0.67,2.65,-0.28),0.045,Color("798f8d"))
-		for i in [-1,0,1]:
-			_beam(body,Vector3(0.67,2.4,-0.28),Vector3(0.67+i*0.19,2.95-abs(i)*0.2,-0.28),0.065,Color("dce1d7"))
-		_box(body,Vector3(0,1.2,-0.31),Vector3(0.6,0.54,0.07),Color("bac9c6"))
-	else:
-		_box(body,Vector3(0,1.45,-0.3),Vector3(0.20,0.32,0.04),Color("c6d4cc"))
 
 func _final_region(id: int) -> void:
 	_cylinder(_room,Vector3(0,0.025,0),8,8,0.08,Color("cbbd9d"),40)
@@ -605,27 +540,6 @@ func _final_region(id: int) -> void:
 	else:
 		_gate(Vector3(0,0,-5),6,1.2,Color("9e705a"))
 		for side in [-1,1]: _tree(Vector3(side*6,0,3),side,1.0)
-
-func decorate_final_actor(actor: Node3D, kind: String) -> void:
-	var body: Node3D=actor.get_node_or_null("Body")
-	if not body: body=actor
-	for mesh in body.find_children("*","MeshInstance3D",true,false):
-		var material: Material=mesh.material_override
-		if material is ShaderMaterial and material.shader==INK_SHADER:
-			var original: Color=material.get_shader_parameter("ink_color")
-			if original.r>original.g*1.3:
-				var robe: ShaderMaterial=material.duplicate()
-				robe.set_shader_parameter("ink_color",Color("b6a77d") if kind=="boss" else Color("998b78"))
-				mesh.material_override=robe
-	if kind=="boss":
-		var weapon: Node3D=actor.find_child("Weapon",true,false)
-		if weapon: weapon.hide()
-		for mesh in body.get_children():
-			if mesh is MeshInstance3D and mesh.position.y>1.8: mesh.hide()
-		_cylinder(body,Vector3(0,1.89,0),0.15,0.2,0.2,Color("575449"),8)
-		_beam(body,Vector3(0.68,0.15,-0.2),Vector3(0.68,2.3,-0.2),0.065,Color("705744"))
-		_cylinder(body,Vector3(0.68,2.5,-0.2),0,0.14,0.4,Color("d4c9ab"),8)
-		_lantern_small(body,Vector3(-0.65,1.0,-0.1),Color("e3b96e"),0.65)
 
 func show_final_phase(phase: int, center: Vector3) -> void:
 	if is_instance_valid(final_scene): final_scene.queue_free()
