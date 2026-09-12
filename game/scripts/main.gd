@@ -1057,7 +1057,9 @@ func _show_boons(reason: String) -> void:
 	var buttons: Array = []
 	for i in range(choices.size()):
 		buttons.append({"id":"boon_%d_%d" % [choice_serial, i], "label":"%d  ·  %s" % [i + 1, choices[i]["name"]], "detail":choices[i]["desc"] + "\n本次闯关生效，可叠加"})
-	ui.show_modal("留下一缕残愿", "灯火记住了你的选择。不同残愿会改变这一程的战斗方式。", buttons, "修为 %d  /  %s" % [level, "探索奖励" if reason == "chest" else "修为提升"])
+	var title: String = "修为提升 · %d 级" % level if level_learning else "留下一缕残愿"
+	var description: String = "经验已满，获得 1 学习点。先选一缕残愿，再学习或升级招式。" if level_learning else "灯火记住了你的选择。不同残愿会改变这一程的战斗方式。"
+	ui.show_modal(title, description, buttons, "修为 %d  /  %s" % [level, "探索奖励" if reason == "chest" else "修为提升"])
 
 func _take_boon(index: int) -> void:
 	if state != "boon" or index < 0 or index >= choices.size():
@@ -1795,6 +1797,22 @@ func _tick_orbit(dt: float) -> void:
 
 func _autoplay_test() -> void:
 	set_process(false)
+	var builds: Dictionary={
+		"flame":{"blade":"iron_staff","robe":"sage_robe","lamp":"ember_lamp","art":"sweep","minds":["orbit","reservoir"],"skills":["fire","vortex","thunder"],"ultimate":"lotus"},
+		"control":{"blade":"long_spear","robe":"wind_robe","lamp":"frost_lamp","art":"thrust","minds":["focus","swift"],"skills":["frost","stun","darts"],"ultimate":"blizzard"},
+		"sustain":{"blade":"long_sword","robe":"iron_robe","lamp":"ward_lamp","art":"flurry","minds":["leech","ironwall"],"skills":["weak","heal","barrier"],"ultimate":"sanctuary"},
+		"burst":{"blade":"heavy_cleaver","robe":"crimson_robe","lamp":"broken_lamp","art":"cleave","minds":["spark","fury"],"skills":["fire","quake","haste"],"ultimate":"avatar"}
+	}
+	var build_id: String="flame"
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--build="): build_id=arg.get_slice("=",1)
+	var build: Dictionary=builds[build_id]
+	var casts: Dictionary={}
+	var ultimate_casts: int=0
+	var level_times: Array=[]
+	var stage_results: Array=[]
+	var observed_level: int=1
+	var final_snapshot: Dictionary={}
 	var seed_value: int=4523
 	var samples: int=0
 	var nearby_sum: int=0
@@ -1809,10 +1827,15 @@ func _autoplay_test() -> void:
 		if arg.begins_with("--density="): wave_density=float(arg.get_slice("=",1))
 		if arg.begins_with("--seed="): seed_value=int(arg.get_slice("=",1))
 	rng.seed=seed_value
+	legacy={"coins":30,"heart":0,"weapon":0,"spirit":0,"chapter":1}
 	_start_run()
 	_on_action("begin")
+	progress["equipped"]={"blade":build["blade"],"robe":build["robe"],"lamp":build["lamp"]}
+	normal_art=build["art"]
+	passives.assign(build["minds"])
+	ultimate_id=build["ultimate"]
 	_show_learning(0)
-	_learn_skill("fire")
+	_learn_skill(build["skills"][0])
 	_on_action("resume")
 	_depart()
 	if "--chapter2" in OS.get_cmdline_user_args():
@@ -1821,19 +1844,24 @@ func _autoplay_test() -> void:
 	Input.action_press("attack")
 	for frame in range(60*480):
 		if state=="result": break
+		if level>observed_level:
+			level_times.append({"level":level,"seconds":snappedf(run_seconds,0.1),"wave":wave_number})
+			observed_level=level
+		final_snapshot={"state":state,"stage":stage_depth,"boss_spawned":boss_spawned,"seconds":snappedf(run_seconds,0.1),"level":level,"kills":kills,"hp":snappedf(hp,0.1),"wave":wave_number,"ranks":skill_ranks.duplicate(),"boons":boon_counts.duplicate()}
 		if state=="transition":
+			stage_results.append(final_snapshot.duplicate(true))
 			if stage_depth>=2:
 				print("CAMPAIGN_AUTOPLAY_CLEAR ",stage_depth," stages, level=",level," seconds=",run_seconds)
 				_on_action("cash_out")
 			else: _on_action("continue_stage")
 		elif state=="dying":
-			await get_tree().create_timer(1.8).timeout
+			break
 		elif state=="story": _on_action("begin")
 		elif state=="learning":
 			if learning_slot<learned_skills.size():
 				_on_action("rank_skill")
 			else:
-				for id in ["fire","frost","stun"]:
+				for id in build["skills"]:
 					if id not in learned_skills:
 						_learn_skill(id)
 						break
@@ -1884,13 +1912,24 @@ func _autoplay_test() -> void:
 						direction=away.normalized() if away.length()>0.1 else Vector3.RIGHT
 						if enemy["timer"]<0.6: _dash(direction)
 			ui.move_vector=Vector2(direction.x,direction.z)
-			if not _nearest_enemy(5).is_empty():
-				for i in range(learned_skills.size()): _cast_skill(i)
-				if ultimate_charge>=100: _ultimate()
+			if not _nearest_enemy(8).is_empty():
+				for i in range(learned_skills.size()):
+					var id: String=learned_skills[i]
+					if id=="heal" and hp>max_hp*0.7: continue
+					if skill_cds[i]>0: continue
+					if id not in ["barrier","haste","heal","thunder","darts"]:
+						var cast_radius: float=(6.5 if id in ["vortex","quake","weak"] else 5.0)*(1+0.1*_boon("flame"))
+						if _nearest_enemy(cast_radius).is_empty(): continue
+					_cast_skill(i)
+					if skill_cds[i]>0: casts[id]=int(casts.get(id,0))+1
+				if ultimate_charge>=100 and (ultimate_id!="sanctuary" or hp<max_hp*0.7):
+					_ultimate()
+					if ultimate_charge<100: ultimate_casts+=1
 			if state=="playing": _tick_game(1.0/60.0)
 		if frame%30==0: await get_tree().process_frame
 	Input.action_release("attack")
 	ui.move_vector=Vector2.ZERO
+	print("BALANCE_RESULT ",JSON.stringify({"seed":seed_value,"build":build_id,"minds":build["minds"],"casts":casts,"ultimates":ultimate_casts,"levels":level_times,"stages":stage_results,"final":final_snapshot,"growth":wave_growth,"nearby_mean":float(nearby_sum)/maxi(1,samples),"early_nearby":float(early_sum)/maxi(1,early_samples),"peak":peak,"empty_fraction":float(empty_samples)/maxi(1,samples)}))
 	print("DENSITY_RESULT ",JSON.stringify({"seed":seed_value,"swarm":swarm_multiplier,"growth":wave_growth,"early_nearby":float(early_sum)/maxi(1,early_samples),"early_empty":float(early_empty)/maxi(1,early_samples),"density":wave_density,"nearby_mean":float(nearby_sum)/maxi(1,samples),"peak":peak,"empty_fraction":float(empty_samples)/maxi(1,samples),"result":last_result}))
 	print("AUTOPLAY_04 ",last_result," returned_home=",not journey_started)
 	get_tree().quit(0 if last_result.get("victory",false) else 1)

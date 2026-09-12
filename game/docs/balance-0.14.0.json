@@ -1,0 +1,2400 @@
+[
+  {
+    "build": "flame",
+    "casts": {
+      "fire": 40,
+      "thunder": 32,
+      "vortex": 28
+    },
+    "early_nearby": 2.35833333333333,
+    "empty_fraction": 0.210526315789474,
+    "final": {
+      "boons": {
+        "crit": 2,
+        "drain": 1,
+        "health": 1,
+        "long_control": 1,
+        "overload": 2,
+        "reach": 1,
+        "soul": 1,
+        "thorns": 2
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 744,
+      "level": 12,
+      "ranks": {
+        "fire": 5,
+        "thunder": 2,
+        "vortex": 5
+      },
+      "seconds": 208.7,
+      "stage": 2,
+      "state": "dying",
+      "wave": 39
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.5,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.5,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.8,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.9,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 48.0,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 68.3,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 94.5,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 120.3,
+        "wave": 22
+      },
+      {
+        "level": 10,
+        "seconds": 148.1,
+        "wave": 27
+      },
+      {
+        "level": 11,
+        "seconds": 172.4,
+        "wave": 32
+      },
+      {
+        "level": 12,
+        "seconds": 201.2,
+        "wave": 37
+      }
+    ],
+    "minds": [
+      "orbit",
+      "reservoir"
+    ],
+    "nearby_mean": 5.1244019138756,
+    "peak": 34,
+    "seed": 4523,
+    "stages": [
+      {
+        "boons": {
+          "crit": 2,
+          "drain": 1,
+          "health": 1,
+          "overload": 2,
+          "thorns": 1
+        },
+        "boss_spawned": true,
+        "hp": 132.0,
+        "kills": 262,
+        "level": 8,
+        "ranks": {
+          "fire": 5,
+          "thunder": 1,
+          "vortex": 2
+        },
+        "seconds": 97.0,
+        "stage": 1,
+        "state": "transition",
+        "wave": 17
+      }
+    ],
+    "ultimates": 39
+  },
+  {
+    "build": "flame",
+    "casts": {
+      "fire": 38,
+      "thunder": 31,
+      "vortex": 26
+    },
+    "early_nearby": 2.23140495867769,
+    "empty_fraction": 0.226600985221675,
+    "final": {
+      "boons": {
+        "drain": 1,
+        "energy": 2,
+        "frostbite": 1,
+        "health": 1,
+        "lotus_step": 2,
+        "orbit": 1,
+        "thorns": 1,
+        "ward": 1
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 707,
+      "level": 11,
+      "ranks": {
+        "fire": 5,
+        "thunder": 1,
+        "vortex": 5
+      },
+      "seconds": 202.2,
+      "stage": 2,
+      "state": "dying",
+      "wave": 38
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.1,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 6.7,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 13.6,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.7,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.9,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 70.4,
+        "wave": 13
+      },
+      {
+        "level": 8,
+        "seconds": 95.2,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 122.3,
+        "wave": 22
+      },
+      {
+        "level": 10,
+        "seconds": 146.6,
+        "wave": 27
+      },
+      {
+        "level": 11,
+        "seconds": 175.8,
+        "wave": 33
+      }
+    ],
+    "minds": [
+      "orbit",
+      "reservoir"
+    ],
+    "nearby_mean": 5.52216748768473,
+    "peak": 33,
+    "seed": 7319,
+    "stages": [
+      {
+        "boons": {
+          "drain": 1,
+          "energy": 1,
+          "health": 1,
+          "lotus_step": 2,
+          "orbit": 1,
+          "ward": 1
+        },
+        "boss_spawned": true,
+        "hp": 107.1,
+        "kills": 257,
+        "level": 8,
+        "ranks": {
+          "fire": 5,
+          "thunder": 1,
+          "vortex": 2
+        },
+        "seconds": 95.4,
+        "stage": 1,
+        "state": "transition",
+        "wave": 17
+      }
+    ],
+    "ultimates": 42
+  },
+  {
+    "build": "flame",
+    "casts": {
+      "fire": 46,
+      "thunder": 39,
+      "vortex": 33
+    },
+    "early_nearby": 1.875,
+    "empty_fraction": 0.208163265306122,
+    "final": {
+      "boons": {
+        "afterimage": 2,
+        "drain": 4,
+        "echo": 1,
+        "expose": 1,
+        "health": 2,
+        "thorns": 2
+      },
+      "boss_spawned": true,
+      "hp": 0.0,
+      "kills": 951,
+      "level": 13,
+      "ranks": {
+        "fire": 5,
+        "thunder": 3,
+        "vortex": 5
+      },
+      "seconds": 245.3,
+      "stage": 2,
+      "state": "dying",
+      "wave": 47
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 1.7,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 6.6,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.2,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 26.4,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.8,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 66.8,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 91.2,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 115.6,
+        "wave": 21
+      },
+      {
+        "level": 10,
+        "seconds": 147.1,
+        "wave": 27
+      },
+      {
+        "level": 11,
+        "seconds": 173.0,
+        "wave": 32
+      },
+      {
+        "level": 12,
+        "seconds": 200.4,
+        "wave": 38
+      },
+      {
+        "level": 13,
+        "seconds": 226.5,
+        "wave": 43
+      }
+    ],
+    "minds": [
+      "orbit",
+      "reservoir"
+    ],
+    "nearby_mean": 6.47551020408163,
+    "peak": 36,
+    "seed": 9021,
+    "stages": [
+      {
+        "boons": {
+          "afterimage": 1,
+          "drain": 3,
+          "health": 1,
+          "thorns": 1
+        },
+        "boss_spawned": true,
+        "hp": 132.0,
+        "kills": 250,
+        "level": 7,
+        "ranks": {
+          "fire": 5,
+          "thunder": 1,
+          "vortex": 1
+        },
+        "seconds": 89.3,
+        "stage": 1,
+        "state": "transition",
+        "wave": 16
+      }
+    ],
+    "ultimates": 55
+  },
+  {
+    "build": "flame",
+    "casts": {
+      "fire": 20,
+      "thunder": 15,
+      "vortex": 15
+    },
+    "early_nearby": 2.01652892561983,
+    "empty_fraction": 0.40990990990991,
+    "final": {
+      "boons": {
+        "burn": 1,
+        "expose": 1,
+        "flame": 1,
+        "lotus_step": 1,
+        "orbit": 1,
+        "second_wind": 1,
+        "thrift": 1
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 331,
+      "level": 8,
+      "ranks": {
+        "fire": 5,
+        "thunder": 1,
+        "vortex": 2
+      },
+      "seconds": 110.8,
+      "stage": 2,
+      "state": "dying",
+      "wave": 20
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.3,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 6.6,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 13.2,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 26.7,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.6,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 68.2,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 95.3,
+        "wave": 17
+      }
+    ],
+    "minds": [
+      "orbit",
+      "reservoir"
+    ],
+    "nearby_mean": 2.95945945945946,
+    "peak": 21,
+    "seed": 1607,
+    "stages": [
+      {
+        "boons": {
+          "burn": 1,
+          "flame": 1,
+          "lotus_step": 1,
+          "orbit": 1,
+          "second_wind": 1,
+          "thrift": 1
+        },
+        "boss_spawned": true,
+        "hp": 76.4,
+        "kills": 233,
+        "level": 7,
+        "ranks": {
+          "fire": 5,
+          "thunder": 1,
+          "vortex": 1
+        },
+        "seconds": 86.0,
+        "stage": 1,
+        "state": "transition",
+        "wave": 15
+      }
+    ],
+    "ultimates": 19
+  },
+  {
+    "build": "flame",
+    "casts": {
+      "fire": 18,
+      "thunder": 13,
+      "vortex": 14
+    },
+    "early_nearby": 2.16528925619835,
+    "empty_fraction": 0.381909547738693,
+    "final": {
+      "boons": {
+        "afterimage": 1,
+        "crit": 1,
+        "dash": 1,
+        "edge": 1,
+        "hunter": 1,
+        "refresh": 1,
+        "shield": 1
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 260,
+      "level": 8,
+      "ranks": {
+        "fire": 5,
+        "thunder": 1,
+        "vortex": 2
+      },
+      "seconds": 98.8,
+      "stage": 2,
+      "state": "dying",
+      "wave": 18
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 1.7,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 6.9,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 13.8,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 26.0,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 48.1,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 69.3,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 96.9,
+        "wave": 18
+      }
+    ],
+    "minds": [
+      "orbit",
+      "reservoir"
+    ],
+    "nearby_mean": 2.8391959798995,
+    "peak": 23,
+    "seed": 8841,
+    "stages": [
+      {
+        "boons": {
+          "afterimage": 1,
+          "crit": 1,
+          "dash": 1,
+          "hunter": 1,
+          "refresh": 1,
+          "shield": 1
+        },
+        "boss_spawned": true,
+        "hp": 38.0,
+        "kills": 214,
+        "level": 7,
+        "ranks": {
+          "fire": 5,
+          "thunder": 1,
+          "vortex": 1
+        },
+        "seconds": 83.2,
+        "stage": 1,
+        "state": "transition",
+        "wave": 15
+      }
+    ],
+    "ultimates": 15
+  },
+  {
+    "build": "control",
+    "casts": {
+      "darts": 42,
+      "frost": 34,
+      "stun": 23
+    },
+    "early_nearby": 1.77685950413223,
+    "empty_fraction": 0.327176781002639,
+    "final": {
+      "boons": {
+        "drain": 2,
+        "energy": 2,
+        "expose": 1,
+        "fervor": 1,
+        "flame": 1,
+        "orbit": 1,
+        "quick": 1,
+        "resolve": 1
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 643,
+      "level": 11,
+      "ranks": {
+        "darts": 1,
+        "frost": 5,
+        "stun": 5
+      },
+      "seconds": 188.9,
+      "stage": 2,
+      "state": "dying",
+      "wave": 35
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.1,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.2,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 13.7,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 26.1,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.5,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 66.3,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 92.7,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 117.9,
+        "wave": 21
+      },
+      {
+        "level": 10,
+        "seconds": 147.6,
+        "wave": 27
+      },
+      {
+        "level": 11,
+        "seconds": 174.3,
+        "wave": 32
+      }
+    ],
+    "minds": [
+      "focus",
+      "swift"
+    ],
+    "nearby_mean": 4.06332453825858,
+    "peak": 30,
+    "seed": 4523,
+    "stages": [
+      {
+        "boons": {
+          "drain": 1,
+          "expose": 1,
+          "flame": 1,
+          "orbit": 1,
+          "quick": 1,
+          "resolve": 1
+        },
+        "boss_spawned": true,
+        "hp": 102.6,
+        "kills": 233,
+        "level": 7,
+        "ranks": {
+          "darts": 1,
+          "frost": 5,
+          "stun": 1
+        },
+        "seconds": 85.9,
+        "stage": 1,
+        "state": "transition",
+        "wave": 15
+      }
+    ],
+    "ultimates": 38
+  },
+  {
+    "build": "control",
+    "casts": {
+      "darts": 18,
+      "frost": 18,
+      "stun": 12
+    },
+    "early_nearby": 1.725,
+    "empty_fraction": 0.431372549019608,
+    "final": {
+      "boons": {
+        "crit": 1,
+        "flame": 1,
+        "health": 1,
+        "orbit": 1,
+        "second_wind": 1,
+        "soul": 2
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 288,
+      "level": 8,
+      "ranks": {
+        "darts": 1,
+        "frost": 5,
+        "stun": 2
+      },
+      "seconds": 101.9,
+      "stage": 2,
+      "state": "dying",
+      "wave": 18
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.6,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.4,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.7,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 28.9,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.7,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 65.6,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 87.6,
+        "wave": 16
+      }
+    ],
+    "minds": [
+      "focus",
+      "swift"
+    ],
+    "nearby_mean": 2.37745098039216,
+    "peak": 28,
+    "seed": 7319,
+    "stages": [
+      {
+        "boons": {
+          "crit": 1,
+          "flame": 1,
+          "health": 1,
+          "orbit": 1,
+          "second_wind": 1,
+          "soul": 2
+        },
+        "boss_spawned": true,
+        "hp": 15.6,
+        "kills": 249,
+        "level": 8,
+        "ranks": {
+          "darts": 1,
+          "frost": 5,
+          "stun": 2
+        },
+        "seconds": 91.8,
+        "stage": 1,
+        "state": "transition",
+        "wave": 16
+      }
+    ],
+    "ultimates": 16
+  },
+  {
+    "build": "control",
+    "casts": {
+      "darts": 65,
+      "frost": 50,
+      "stun": 36
+    },
+    "early_nearby": 1.85950413223141,
+    "empty_fraction": 0.184448462929476,
+    "final": {
+      "boons": {
+        "dash": 1,
+        "drain": 4,
+        "expose": 1,
+        "frostbite": 1,
+        "health": 1,
+        "orbit": 1,
+        "overload": 1,
+        "rage": 1,
+        "soul": 1,
+        "ward": 1
+      },
+      "boss_spawned": true,
+      "hp": 0.0,
+      "kills": 1120,
+      "level": 14,
+      "ranks": {
+        "darts": 4,
+        "frost": 5,
+        "stun": 5
+      },
+      "seconds": 276.1,
+      "stage": 2,
+      "state": "dying",
+      "wave": 54
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.1,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 6.8,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.3,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.3,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.9,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 67.5,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 95.2,
+        "wave": 18
+      },
+      {
+        "level": 9,
+        "seconds": 121.9,
+        "wave": 23
+      },
+      {
+        "level": 10,
+        "seconds": 143.7,
+        "wave": 27
+      },
+      {
+        "level": 11,
+        "seconds": 171.4,
+        "wave": 32
+      },
+      {
+        "level": 12,
+        "seconds": 198.2,
+        "wave": 37
+      },
+      {
+        "level": 13,
+        "seconds": 220.7,
+        "wave": 42
+      },
+      {
+        "level": 14,
+        "seconds": 250.8,
+        "wave": 48
+      }
+    ],
+    "minds": [
+      "focus",
+      "swift"
+    ],
+    "nearby_mean": 7.55877034358047,
+    "peak": 50,
+    "seed": 9021,
+    "stages": [
+      {
+        "boons": {
+          "drain": 2,
+          "frostbite": 1,
+          "health": 1,
+          "orbit": 1,
+          "ward": 1
+        },
+        "boss_spawned": true,
+        "hp": 109.0,
+        "kills": 250,
+        "level": 7,
+        "ranks": {
+          "darts": 1,
+          "frost": 5,
+          "stun": 1
+        },
+        "seconds": 93.5,
+        "stage": 1,
+        "state": "transition",
+        "wave": 17
+      }
+    ],
+    "ultimates": 62
+  },
+  {
+    "build": "control",
+    "casts": {
+      "darts": 18,
+      "frost": 18,
+      "stun": 12
+    },
+    "early_nearby": 2.08333333333333,
+    "empty_fraction": 0.411764705882353,
+    "final": {
+      "boons": {
+        "edge": 1,
+        "energy": 1,
+        "health": 2,
+        "reach": 1,
+        "soul": 1,
+        "thrift": 1
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 288,
+      "level": 8,
+      "ranks": {
+        "darts": 1,
+        "frost": 5,
+        "stun": 2
+      },
+      "seconds": 101.9,
+      "stage": 2,
+      "state": "dying",
+      "wave": 18
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.6,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 6.9,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 13.7,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.9,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.7,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 68.4,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 94.0,
+        "wave": 17
+      }
+    ],
+    "minds": [
+      "focus",
+      "swift"
+    ],
+    "nearby_mean": 2.68627450980392,
+    "peak": 20,
+    "seed": 1607,
+    "stages": [
+      {
+        "boons": {
+          "edge": 1,
+          "energy": 1,
+          "health": 2,
+          "reach": 1,
+          "thrift": 1
+        },
+        "boss_spawned": true,
+        "hp": 40.7,
+        "kills": 248,
+        "level": 7,
+        "ranks": {
+          "darts": 1,
+          "frost": 5,
+          "stun": 1
+        },
+        "seconds": 90.9,
+        "stage": 1,
+        "state": "transition",
+        "wave": 16
+      }
+    ],
+    "ultimates": 16
+  },
+  {
+    "build": "control",
+    "casts": {
+      "darts": 19,
+      "frost": 18,
+      "stun": 12
+    },
+    "early_nearby": 1.47107438016529,
+    "empty_fraction": 0.401960784313726,
+    "final": {
+      "boons": {
+        "crit": 1,
+        "edge": 1,
+        "energy": 2,
+        "flame": 1,
+        "lotus_step": 1,
+        "thorns": 1
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 290,
+      "level": 8,
+      "ranks": {
+        "darts": 1,
+        "frost": 5,
+        "stun": 2
+      },
+      "seconds": 101.2,
+      "stage": 2,
+      "state": "dying",
+      "wave": 18
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.1,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.4,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.8,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 26.3,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.7,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 68.3,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 92.5,
+        "wave": 17
+      }
+    ],
+    "minds": [
+      "focus",
+      "swift"
+    ],
+    "nearby_mean": 2.52941176470588,
+    "peak": 20,
+    "seed": 8841,
+    "stages": [
+      {
+        "boons": {
+          "crit": 1,
+          "edge": 1,
+          "energy": 2,
+          "flame": 1,
+          "thorns": 1
+        },
+        "boss_spawned": true,
+        "hp": 41.4,
+        "kills": 233,
+        "level": 7,
+        "ranks": {
+          "darts": 1,
+          "frost": 5,
+          "stun": 1
+        },
+        "seconds": 85.5,
+        "stage": 1,
+        "state": "transition",
+        "wave": 15
+      }
+    ],
+    "ultimates": 16
+  },
+  {
+    "build": "sustain",
+    "casts": {
+      "barrier": 31,
+      "heal": 12,
+      "weak": 48
+    },
+    "early_nearby": 3.05785123966942,
+    "empty_fraction": 0.0823529411764706,
+    "final": {
+      "boons": {
+        "burn": 1,
+        "crit": 1,
+        "fervor": 1,
+        "frostbite": 1,
+        "health": 1,
+        "long_control": 1,
+        "orbit": 2,
+        "quick": 1,
+        "shield": 1,
+        "thorns": 2,
+        "venom": 1,
+        "ward": 1
+      },
+      "boss_spawned": true,
+      "hp": 0.0,
+      "kills": 1348,
+      "level": 15,
+      "ranks": {
+        "barrier": 5,
+        "heal": 5,
+        "weak": 5
+      },
+      "seconds": 339.0,
+      "stage": 2,
+      "state": "dying",
+      "wave": 68
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.3,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.8,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.8,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 28.0,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 48.2,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 69.3,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 95.0,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 122.5,
+        "wave": 22
+      },
+      {
+        "level": 10,
+        "seconds": 149.5,
+        "wave": 27
+      },
+      {
+        "level": 11,
+        "seconds": 177.9,
+        "wave": 33
+      },
+      {
+        "level": 12,
+        "seconds": 204.3,
+        "wave": 38
+      },
+      {
+        "level": 13,
+        "seconds": 233.7,
+        "wave": 44
+      },
+      {
+        "level": 14,
+        "seconds": 267.2,
+        "wave": 51
+      },
+      {
+        "level": 15,
+        "seconds": 313.5,
+        "wave": 62
+      }
+    ],
+    "minds": [
+      "leech",
+      "ironwall"
+    ],
+    "nearby_mean": 18.4926470588235,
+    "peak": 65,
+    "seed": 4523,
+    "stages": [
+      {
+        "boons": {
+          "burn": 1,
+          "orbit": 2,
+          "quick": 1,
+          "shield": 1,
+          "thorns": 2
+        },
+        "boss_spawned": true,
+        "hp": 126.0,
+        "kills": 307,
+        "level": 8,
+        "ranks": {
+          "barrier": 1,
+          "heal": 2,
+          "weak": 5
+        },
+        "seconds": 108.0,
+        "stage": 1,
+        "state": "transition",
+        "wave": 19
+      }
+    ],
+    "ultimates": 23
+  },
+  {
+    "build": "sustain",
+    "casts": {
+      "barrier": 33,
+      "heal": 12,
+      "weak": 51
+    },
+    "early_nearby": 3.275,
+    "empty_fraction": 0.0748959778085992,
+    "final": {
+      "boons": {
+        "crit": 3,
+        "drain": 2,
+        "health": 1,
+        "hunter": 1,
+        "lotus_step": 1,
+        "orbit": 2,
+        "shield": 1,
+        "thorns": 1,
+        "thrift": 1,
+        "venom": 1
+      },
+      "boss_spawned": true,
+      "hp": 0.0,
+      "kills": 1411,
+      "level": 15,
+      "ranks": {
+        "barrier": 5,
+        "heal": 5,
+        "weak": 5
+      },
+      "seconds": 359.8,
+      "stage": 2,
+      "state": "dying",
+      "wave": 74
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 3.0,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.8,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.9,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.5,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 48.8,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 69.6,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 94.8,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 126.1,
+        "wave": 23
+      },
+      {
+        "level": 10,
+        "seconds": 153.2,
+        "wave": 29
+      },
+      {
+        "level": 11,
+        "seconds": 180.3,
+        "wave": 34
+      },
+      {
+        "level": 12,
+        "seconds": 210.8,
+        "wave": 40
+      },
+      {
+        "level": 13,
+        "seconds": 238.0,
+        "wave": 46
+      },
+      {
+        "level": 14,
+        "seconds": 273.3,
+        "wave": 53
+      },
+      {
+        "level": 15,
+        "seconds": 313.6,
+        "wave": 63
+      }
+    ],
+    "minds": [
+      "leech",
+      "ironwall"
+    ],
+    "nearby_mean": 23.1400832177531,
+    "peak": 65,
+    "seed": 7319,
+    "stages": [
+      {
+        "boons": {
+          "crit": 1,
+          "drain": 1,
+          "health": 1,
+          "hunter": 1,
+          "orbit": 2,
+          "shield": 1
+        },
+        "boss_spawned": true,
+        "hp": 148.0,
+        "kills": 342,
+        "level": 8,
+        "ranks": {
+          "barrier": 1,
+          "heal": 2,
+          "weak": 5
+        },
+        "seconds": 120.3,
+        "stage": 1,
+        "state": "transition",
+        "wave": 22
+      }
+    ],
+    "ultimates": 29
+  },
+  {
+    "build": "sustain",
+    "casts": {
+      "barrier": 28,
+      "heal": 11,
+      "weak": 44
+    },
+    "early_nearby": 2.86666666666667,
+    "empty_fraction": 0.0841423948220065,
+    "final": {
+      "boons": {
+        "afterimage": 1,
+        "ash": 1,
+        "burn": 1,
+        "crit": 2,
+        "execute": 1,
+        "expose": 1,
+        "fervor": 1,
+        "health": 2,
+        "hunter": 1,
+        "quick": 1,
+        "thrift": 1,
+        "ward": 1
+      },
+      "boss_spawned": true,
+      "hp": 170.0,
+      "kills": 1280,
+      "level": 15,
+      "ranks": {
+        "barrier": 5,
+        "heal": 5,
+        "weak": 5
+      },
+      "seconds": 309.1,
+      "stage": 2,
+      "state": "transition",
+      "wave": 61
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.0,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.8,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.9,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.2,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 48.3,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 69.0,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 95.6,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 121.4,
+        "wave": 22
+      },
+      {
+        "level": 10,
+        "seconds": 150.2,
+        "wave": 28
+      },
+      {
+        "level": 11,
+        "seconds": 177.5,
+        "wave": 33
+      },
+      {
+        "level": 12,
+        "seconds": 203.8,
+        "wave": 38
+      },
+      {
+        "level": 13,
+        "seconds": 233.4,
+        "wave": 44
+      },
+      {
+        "level": 14,
+        "seconds": 265.7,
+        "wave": 51
+      },
+      {
+        "level": 15,
+        "seconds": 298.7,
+        "wave": 59
+      }
+    ],
+    "minds": [
+      "leech",
+      "ironwall"
+    ],
+    "nearby_mean": 16.6375404530744,
+    "peak": 65,
+    "seed": 9021,
+    "stages": [
+      {
+        "boons": {
+          "burn": 1,
+          "crit": 1,
+          "fervor": 1,
+          "health": 2,
+          "quick": 1,
+          "thrift": 1
+        },
+        "boss_spawned": true,
+        "hp": 170.0,
+        "kills": 282,
+        "level": 8,
+        "ranks": {
+          "barrier": 1,
+          "heal": 2,
+          "weak": 5
+        },
+        "seconds": 101.2,
+        "stage": 1,
+        "state": "transition",
+        "wave": 18
+      },
+      {
+        "boons": {
+          "afterimage": 1,
+          "ash": 1,
+          "burn": 1,
+          "crit": 2,
+          "execute": 1,
+          "expose": 1,
+          "fervor": 1,
+          "health": 2,
+          "hunter": 1,
+          "quick": 1,
+          "thrift": 1,
+          "ward": 1
+        },
+        "boss_spawned": true,
+        "hp": 170.0,
+        "kills": 1280,
+        "level": 15,
+        "ranks": {
+          "barrier": 5,
+          "heal": 5,
+          "weak": 5
+        },
+        "seconds": 309.1,
+        "stage": 2,
+        "state": "transition",
+        "wave": 61
+      }
+    ],
+    "ultimates": 20
+  },
+  {
+    "build": "sustain",
+    "casts": {
+      "barrier": 31,
+      "heal": 9,
+      "weak": 48
+    },
+    "early_nearby": 2.93333333333333,
+    "empty_fraction": 0.0844155844155844,
+    "final": {
+      "boons": {
+        "crit": 2,
+        "drain": 2,
+        "echo": 1,
+        "energy": 1,
+        "expose": 1,
+        "flame": 1,
+        "hunter": 1,
+        "quick": 1,
+        "refresh": 1,
+        "shield": 2,
+        "thorns": 1
+      },
+      "boss_spawned": true,
+      "hp": 126.0,
+      "kills": 1286,
+      "level": 15,
+      "ranks": {
+        "barrier": 5,
+        "heal": 5,
+        "weak": 5
+      },
+      "seconds": 308.1,
+      "stage": 2,
+      "state": "transition",
+      "wave": 61
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.3,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.8,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.9,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.3,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 48.1,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 70.1,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 95.1,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 121.1,
+        "wave": 22
+      },
+      {
+        "level": 10,
+        "seconds": 149.1,
+        "wave": 27
+      },
+      {
+        "level": 11,
+        "seconds": 174.2,
+        "wave": 32
+      },
+      {
+        "level": 12,
+        "seconds": 202.6,
+        "wave": 38
+      },
+      {
+        "level": 13,
+        "seconds": 230.7,
+        "wave": 44
+      },
+      {
+        "level": 14,
+        "seconds": 263.3,
+        "wave": 51
+      },
+      {
+        "level": 15,
+        "seconds": 299.0,
+        "wave": 59
+      }
+    ],
+    "minds": [
+      "leech",
+      "ironwall"
+    ],
+    "nearby_mean": 15.7353896103896,
+    "peak": 65,
+    "seed": 1607,
+    "stages": [
+      {
+        "boons": {
+          "crit": 1,
+          "drain": 1,
+          "echo": 1,
+          "expose": 1,
+          "flame": 1,
+          "hunter": 1,
+          "refresh": 1
+        },
+        "boss_spawned": true,
+        "hp": 126.0,
+        "kills": 308,
+        "level": 8,
+        "ranks": {
+          "barrier": 1,
+          "heal": 2,
+          "weak": 5
+        },
+        "seconds": 107.3,
+        "stage": 1,
+        "state": "transition",
+        "wave": 19
+      },
+      {
+        "boons": {
+          "crit": 2,
+          "drain": 2,
+          "echo": 1,
+          "energy": 1,
+          "expose": 1,
+          "flame": 1,
+          "hunter": 1,
+          "quick": 1,
+          "refresh": 1,
+          "shield": 2,
+          "thorns": 1
+        },
+        "boss_spawned": true,
+        "hp": 126.0,
+        "kills": 1286,
+        "level": 15,
+        "ranks": {
+          "barrier": 5,
+          "heal": 5,
+          "weak": 5
+        },
+        "seconds": 308.1,
+        "stage": 2,
+        "state": "transition",
+        "wave": 61
+      }
+    ],
+    "ultimates": 17
+  },
+  {
+    "build": "sustain",
+    "casts": {
+      "barrier": 28,
+      "heal": 10,
+      "weak": 44
+    },
+    "early_nearby": 3.3801652892562,
+    "empty_fraction": 0.0849358974358974,
+    "final": {
+      "boons": {
+        "burn": 2,
+        "dash": 1,
+        "drain": 5,
+        "flame": 1,
+        "hunter": 1,
+        "lotus_step": 1,
+        "orbit": 1,
+        "shield": 1,
+        "soul": 1
+      },
+      "boss_spawned": true,
+      "hp": 0.0,
+      "kills": 1268,
+      "level": 15,
+      "ranks": {
+        "barrier": 5,
+        "heal": 5,
+        "weak": 5
+      },
+      "seconds": 311.9,
+      "stage": 2,
+      "state": "dying",
+      "wave": 62
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 1.7,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.8,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.8,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.1,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 48.5,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 70.0,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 94.7,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 126.5,
+        "wave": 24
+      },
+      {
+        "level": 10,
+        "seconds": 149.8,
+        "wave": 28
+      },
+      {
+        "level": 11,
+        "seconds": 176.7,
+        "wave": 33
+      },
+      {
+        "level": 12,
+        "seconds": 207.0,
+        "wave": 39
+      },
+      {
+        "level": 13,
+        "seconds": 235.0,
+        "wave": 45
+      },
+      {
+        "level": 14,
+        "seconds": 265.0,
+        "wave": 52
+      },
+      {
+        "level": 15,
+        "seconds": 302.0,
+        "wave": 60
+      }
+    ],
+    "minds": [
+      "leech",
+      "ironwall"
+    ],
+    "nearby_mean": 19.0721153846154,
+    "peak": 65,
+    "seed": 8841,
+    "stages": [
+      {
+        "boons": {
+          "burn": 1,
+          "drain": 4,
+          "lotus_step": 1,
+          "orbit": 1
+        },
+        "boss_spawned": true,
+        "hp": 126.0,
+        "kills": 270,
+        "level": 8,
+        "ranks": {
+          "barrier": 1,
+          "heal": 2,
+          "weak": 5
+        },
+        "seconds": 98.3,
+        "stage": 1,
+        "state": "transition",
+        "wave": 18
+      }
+    ],
+    "ultimates": 16
+  },
+  {
+    "build": "burst",
+    "casts": {
+      "fire": 14,
+      "haste": 4,
+      "quake": 8
+    },
+    "early_nearby": 3.72727272727273,
+    "empty_fraction": 0.246376811594203,
+    "final": {
+      "boons": {
+        "crit": 2,
+        "dash": 2,
+        "orbit": 1
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 174,
+      "level": 6,
+      "ranks": {
+        "fire": 4,
+        "haste": 1,
+        "quake": 1
+      },
+      "seconds": 68.7,
+      "stage": 1,
+      "state": "dying",
+      "wave": 12
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 4.7,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 8.0,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 15.1,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.4,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.9,
+        "wave": 9
+      }
+    ],
+    "minds": [
+      "spark",
+      "fury"
+    ],
+    "nearby_mean": 3.86231884057971,
+    "peak": 18,
+    "seed": 4523,
+    "stages": [],
+    "ultimates": 9
+  },
+  {
+    "build": "burst",
+    "casts": {
+      "fire": 29,
+      "haste": 14,
+      "quake": 18
+    },
+    "early_nearby": 4.14876033057851,
+    "empty_fraction": 0.127868852459016,
+    "final": {
+      "boons": {
+        "afterimage": 2,
+        "crit": 2,
+        "drain": 1,
+        "health": 1,
+        "orbit": 1,
+        "overload": 1,
+        "shield": 1
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 458,
+      "level": 10,
+      "ranks": {
+        "fire": 5,
+        "haste": 1,
+        "quake": 4
+      },
+      "seconds": 151.6,
+      "stage": 2,
+      "state": "dying",
+      "wave": 28
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.8,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 8.0,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 16.0,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.9,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.8,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 69.6,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 96.3,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 121.7,
+        "wave": 22
+      },
+      {
+        "level": 10,
+        "seconds": 151.3,
+        "wave": 28
+      }
+    ],
+    "minds": [
+      "spark",
+      "fury"
+    ],
+    "nearby_mean": 6.6655737704918,
+    "peak": 42,
+    "seed": 7319,
+    "stages": [
+      {
+        "boons": {
+          "afterimage": 1,
+          "crit": 2,
+          "drain": 1,
+          "health": 1,
+          "overload": 1,
+          "shield": 1
+        },
+        "boss_spawned": true,
+        "hp": 132.0,
+        "kills": 300,
+        "level": 8,
+        "ranks": {
+          "fire": 5,
+          "haste": 1,
+          "quake": 2
+        },
+        "seconds": 106.6,
+        "stage": 1,
+        "state": "transition",
+        "wave": 19
+      }
+    ],
+    "ultimates": 25
+  },
+  {
+    "build": "burst",
+    "casts": {
+      "fire": 16,
+      "haste": 6,
+      "quake": 10
+    },
+    "early_nearby": 3.24793388429752,
+    "empty_fraction": 0.168674698795181,
+    "final": {
+      "boons": {
+        "crit": 2,
+        "edge": 1,
+        "energy": 1,
+        "overload": 1,
+        "thorns": 1
+      },
+      "boss_spawned": true,
+      "hp": 0.0,
+      "kills": 205,
+      "level": 7,
+      "ranks": {
+        "fire": 5,
+        "haste": 1,
+        "quake": 1
+      },
+      "seconds": 82.6,
+      "stage": 1,
+      "state": "dying",
+      "wave": 15
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 3.3,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.2,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 15.3,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 29.1,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.8,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 69.5,
+        "wave": 12
+      }
+    ],
+    "minds": [
+      "spark",
+      "fury"
+    ],
+    "nearby_mean": 4.05421686746988,
+    "peak": 28,
+    "seed": 9021,
+    "stages": [],
+    "ultimates": 12
+  },
+  {
+    "build": "burst",
+    "casts": {
+      "fire": 19,
+      "haste": 8,
+      "quake": 12
+    },
+    "early_nearby": 3.19327731092437,
+    "empty_fraction": 0.256410256410256,
+    "final": {
+      "boons": {
+        "afterimage": 1,
+        "burn": 1,
+        "crit": 1,
+        "echo": 1,
+        "edge": 1,
+        "health": 1,
+        "rage": 1
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 269,
+      "level": 8,
+      "ranks": {
+        "fire": 5,
+        "haste": 1,
+        "quake": 2
+      },
+      "seconds": 97.8,
+      "stage": 2,
+      "state": "dying",
+      "wave": 17
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.0,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.2,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 15.6,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 29.5,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.8,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 69.8,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 94.2,
+        "wave": 17
+      }
+    ],
+    "minds": [
+      "spark",
+      "fury"
+    ],
+    "nearby_mean": 4.31282051282051,
+    "peak": 34,
+    "seed": 1607,
+    "stages": [
+      {
+        "boons": {
+          "burn": 1,
+          "crit": 1,
+          "echo": 1,
+          "edge": 1,
+          "health": 1,
+          "rage": 1
+        },
+        "boss_spawned": true,
+        "hp": 7.4,
+        "kills": 251,
+        "level": 7,
+        "ranks": {
+          "fire": 5,
+          "haste": 1,
+          "quake": 1
+        },
+        "seconds": 92.2,
+        "stage": 1,
+        "state": "transition",
+        "wave": 16
+      }
+    ],
+    "ultimates": 14
+  },
+  {
+    "build": "burst",
+    "casts": {
+      "fire": 34,
+      "haste": 16,
+      "quake": 20
+    },
+    "early_nearby": 3.61157024793388,
+    "empty_fraction": 0.117302052785924,
+    "final": {
+      "boons": {
+        "drain": 1,
+        "fervor": 1,
+        "health": 3,
+        "orbit": 2,
+        "venom": 2
+      },
+      "boss_spawned": false,
+      "hp": 0.0,
+      "kills": 544,
+      "level": 10,
+      "ranks": {
+        "fire": 5,
+        "haste": 1,
+        "quake": 4
+      },
+      "seconds": 169.6,
+      "stage": 2,
+      "state": "dying",
+      "wave": 32
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.6,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.2,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 15.7,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 28.2,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.8,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 68.6,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 97.4,
+        "wave": 18
+      },
+      {
+        "level": 9,
+        "seconds": 123.8,
+        "wave": 23
+      },
+      {
+        "level": 10,
+        "seconds": 148.7,
+        "wave": 28
+      }
+    ],
+    "minds": [
+      "spark",
+      "fury"
+    ],
+    "nearby_mean": 6.6158357771261,
+    "peak": 31,
+    "seed": 8841,
+    "stages": [
+      {
+        "boons": {
+          "drain": 1,
+          "fervor": 1,
+          "health": 1,
+          "orbit": 1,
+          "venom": 2
+        },
+        "boss_spawned": true,
+        "hp": 101.1,
+        "kills": 212,
+        "level": 7,
+        "ranks": {
+          "fire": 5,
+          "haste": 1,
+          "quake": 1
+        },
+        "seconds": 82.1,
+        "stage": 1,
+        "state": "transition",
+        "wave": 15
+      }
+    ],
+    "ultimates": 31
+  }
+]

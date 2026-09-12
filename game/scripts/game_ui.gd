@@ -33,6 +33,9 @@ var _health: ProgressBar
 var _health_text: Label
 var _energy: ProgressBar
 var _experience: ProgressBar
+var _experience_text: Label
+var _experience_fill: StyleBoxFlat
+var _experience_hint: Label
 var _boss_box: VBoxContainer
 var _boss_label: Label
 var _boss_bar: ProgressBar
@@ -221,19 +224,23 @@ func _build_hud() -> void:
 	stats.add_child(_health)
 	_energy = _bar(JADE, 5)
 	stats.add_child(_energy)
-	_experience = _bar(GOLD, 3)
+	_experience_text = _label("经验 0 / 40", 14, PAPER)
+	stats.add_child(_experience_text)
+	_experience = _bar(GOLD, 10)
+	_experience_fill = _experience.get_theme_stylebox("fill").duplicate() as StyleBoxFlat
+	_experience.add_theme_stylebox_override("fill", _experience_fill)
 	stats.add_child(_experience)
 	_resource_text=_label("",13,PAPER)
 	stats.add_child(_resource_text)
 
 	var quest_bg:=Panel.new()
-	quest_bg.position=Vector2(18,136)
+	quest_bg.position=Vector2(18,166)
 	quest_bg.size=Vector2(295,164)
 	quest_bg.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	quest_bg.add_theme_stylebox_override("panel",_box(Color(0.93,0.91,0.85,0.94),Color(0.5,0.47,0.34,0.25),3,1))
 	_combat.add_child(quest_bg)
 	var quest_panel: VBoxContainer = VBoxContainer.new()
-	quest_panel.position = Vector2(26, 142)
+	quest_panel.position = Vector2(26, 172)
 	quest_panel.custom_minimum_size = Vector2(275, 0)
 	quest_panel.add_theme_constant_override("separation", 6)
 	quest_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -333,6 +340,17 @@ func _build_hud() -> void:
 	_joystick.visible = _is_touch
 	_joystick.moved.connect(_on_stick_moved)
 	_combat.add_child(_joystick)
+	_experience_hint = _label("", 19, Color("ffe1a1"))
+	_experience_hint.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	_experience_hint.offset_left = -155
+	_experience_hint.offset_right = 155
+	_experience_hint.offset_top = -122
+	_experience_hint.offset_bottom = -99
+	_experience_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_experience_hint.add_theme_color_override("font_outline_color", Color("242c27"))
+	_experience_hint.add_theme_constant_override("outline_size", 5)
+	_experience_hint.visible = false
+	_combat.add_child(_experience_hint)
 
 
 func _build_modal() -> void:
@@ -421,6 +439,14 @@ func update_hud(data: Dictionary) -> void:
 	if float(data.get("shield",0))>0: _resource_text.text+="  ·  盾 %d"%int(data["shield"])
 	_experience.max_value = maxf(1.0, float(data.get("xp_next", 100.0)))
 	_experience.value = float(data.get("xp", 0.0))
+	var near_level: bool = _experience.ratio >= 0.8
+	_experience_text.text = "经验 %d / %d" % [int(_experience.value), int(_experience.max_value)]
+	if near_level: _experience_text.text += " · 即将升级"
+	if data.get("home", false): _experience_text.text = "出发后击败敌人，积累经验"
+	_experience_fill.bg_color = Color("b66a23") if near_level else GOLD
+	_experience_text.add_theme_color_override("font_color", Color("864416") if near_level else PAPER)
+	_experience_hint.visible = near_level and not data.get("home", false)
+	_experience_hint.text = "即将升级 · 还差 %d 经验" % int(_experience.max_value - _experience.value)
 	_room_label.text = str(data.get("title","残灯庵"))
 	_objective_label.text = str(data.get("objective", "循灯而行，寻回命火。"))
 	var remaining: int = int(data.get("enemies", 0))
@@ -490,7 +516,7 @@ func _build_map_ui() -> void:
 	_map_view.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	_combat.add_child(_map_view)
 	_progress_label=_label("",14,PAPER)
-	_progress_label.position=Vector2(26,258)
+	_progress_label.position=Vector2(26,280)
 	_progress_label.custom_minimum_size=Vector2(280,44)
 	_combat.add_child(_progress_label)
 	var utility:=HBoxContainer.new()
