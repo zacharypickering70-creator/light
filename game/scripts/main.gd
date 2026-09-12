@@ -1,5 +1,10 @@
 extends Node3D
 
+const Exploration = preload("res://scripts/exploration.gd")
+var found_scroll: Dictionary = {}
+var damage_sources: Dictionary = {}
+var last_damage_source: String = ""
+
 const ChapterSix=preload("res://scripts/chapter_six.gd")
 const ChapterFive=preload("res://scripts/chapter_five.gd")
 const ChapterFour=preload("res://scripts/chapter_four.gd")
@@ -659,6 +664,8 @@ func _telegraph(enemy: Dictionary) -> void:
 		enemy["attack"] = "shot"
 		pos = enemy["node"].position
 		radius = 0.8
+		enemy["fan_shot"] = chapter == 2 and int(enemy["count"]) % 3 == 0
+		if chapter == 2: duration = 0.9
 	elif kind == "brute":
 		radius = 2.4
 		duration = 1.15
@@ -667,6 +674,7 @@ func _telegraph(enemy: Dictionary) -> void:
 	enemy["attack_radius"] = radius
 	enemy["timer"] = duration
 	enemy["tell"] = _disc(pos, radius, Color(0.85, 0.17, 0.11, 0.28))
+	if kind == "ranger": preload("res://scripts/ranger_warning.gd").draw(self, enemy)
 
 func _resolve_enemy_attack(enemy: Dictionary) -> void:
 	if is_instance_valid(enemy["tell"]):
@@ -706,10 +714,10 @@ func _resolve_enemy_attack(enemy: Dictionary) -> void:
 		if player.position.distance_to(pos)<radius+0.35: _hurt_player(22.0*(0.75 if enemy.get("weak",0.0)>0 else 1.0))
 		if state!="playing": return
 	elif enemy["attack"] == "shot":
-		_spawn_projectile(enemy["node"].position, (enemy["aim"] - enemy["node"].position).normalized(), 7, 12 * float(enemy.get("power",1.0))*(0.75 if enemy.get("weak",0.0)>0 else 1.0))
-		if chapter==2:
+		_spawn_projectile(enemy["node"].position, (enemy["aim"] - enemy["node"].position).normalized(), 7, 12 * float(enemy.get("power",1.0))*(0.75 if enemy.get("weak",0.0)>0 else 1.0), "ranger_projectile")
+		if enemy.get("fan_shot", false):
 			var aim: Vector3=(enemy["aim"]-enemy["node"].position).normalized()
-			for angle in [-0.22,0.22]: _spawn_projectile(enemy["node"].position,aim.rotated(Vector3.UP,angle),6,9*float(enemy.get("power",1.0))*(0.75 if enemy.get("weak",0.0)>0 else 1.0))
+			for angle in [-0.22,0.22]: _spawn_projectile(enemy["node"].position,aim.rotated(Vector3.UP,angle),6,9*float(enemy.get("power",1.0))*(0.75 if enemy.get("weak",0.0)>0 else 1.0), "ranger_projectile")
 	elif enemy["attack"] == "volley":
 		var bolts: int=16 if chapter==2 and enemy["hp"]<enemy["max_hp"]*0.5 else 12
 		for i in range(bolts):
@@ -721,13 +729,13 @@ func _resolve_enemy_attack(enemy: Dictionary) -> void:
 		_ring(pos, radius, Color("e2714e"), 0.35)
 		var damage: float = (24 if kind == "boss" else (20 if kind == "brute" else 12))*(0.75 if enemy.get("weak",0.0)>0 else 1.0)
 		if player.position.distance_to(pos) < radius + 0.35:
-			_hurt_player(damage * float(enemy.get("power",1.0)))
+			_hurt_player(damage * float(enemy.get("power",1.0)), kind + "_melee")
 			if state!="playing": return
 	enemy["mode"] = "recover"
 	enemy["timer"] = 1.1 if kind == "boss" else 0.85
 	if chapter==3 and kind=="boss" and enemy["attack"]=="mirror" and enemy.get("varied",false): enemy["timer"]=2.0
 
-func _spawn_projectile(pos: Vector3, direction: Vector3, speed: float, damage: float) -> void:
+func _spawn_projectile(pos: Vector3, direction: Vector3, speed: float, damage: float, source: String = "boss_projectile") -> void:
 	var mesh := MeshInstance3D.new()
 	var sphere := SphereMesh.new()
 	sphere.radius = 0.22
@@ -737,7 +745,7 @@ func _spawn_projectile(pos: Vector3, direction: Vector3, speed: float, damage: f
 	effects.add_child(mesh)
 	mesh.position = pos + Vector3.UP * 0.65
 	direction.y = 0
-	projectiles.append({"node":mesh,"velocity":direction.normalized()*speed,"damage":damage,"life":5.0})
+	projectiles.append({"node":mesh,"velocity":direction.normalized()*speed,"damage":damage,"life":5.0,"source":source})
 
 func _tick_projectiles(dt: float) -> void:
 	for projectile in projectiles.duplicate():
@@ -746,7 +754,7 @@ func _tick_projectiles(dt: float) -> void:
 		projectile["life"] -= dt
 		var hit: bool = Vector2(node.position.x, node.position.z).distance_to(Vector2(player.position.x, player.position.z)) < 0.65
 		if hit:
-			_hurt_player(projectile["damage"])
+			_hurt_player(projectile["damage"], projectile.get("source", "boss_projectile"))
 			if state!="playing": return
 		if hit or projectile["life"] <= 0 or Vector2(node.position.x, node.position.z).length() > 57:
 			node.queue_free()
@@ -865,7 +873,7 @@ func _kill_enemy(enemy: Dictionary) -> void:
 	if enemy["kind"] == "boss":
 		_finish_run(true)
 
-func _hurt_player(amount: float) -> void:
+func _hurt_player(amount: float, source: String = "boss") -> void:
 	if immunity > 0 or state != "playing" or not journey_started:
 		return
 	var reduction: float = pow(0.86, _boon("ward")) * (1 - mini(int(progress["gear"]["robe"]), 5) * 0.03)
@@ -885,6 +893,14 @@ func _hurt_player(amount: float) -> void:
 	if state!="playing": return
 	received_hits+=1
 	received_damage+=damage
+	source = str(stage_depth) + ":" + source
+	last_damage_source = source
+	var record: Dictionary = damage_sources.get(source, {"hits":0, "health_damage":0.0, "absorbed":0.0, "max_hit":0.0})
+	record["hits"] += 1
+	record["health_damage"] += minf(hp, damage)
+	record["absorbed"] += absorbed
+	record["max_hit"] = maxf(record["max_hit"], damage)
+	damage_sources[source] = record
 	hp = maxf(0, hp - damage)
 	immunity = 0.65
 	_float_text(player.position + Vector3.UP * 2, "−" + str(roundi(damage)), Color("ed7f6c"))
@@ -893,6 +909,9 @@ func _hurt_player(amount: float) -> void:
 		_finish_run(false)
 
 func _reset_journey() -> void:
+	found_scroll = {}
+	damage_sources.clear()
+	last_damage_source = ""
 	rooted_left=0
 	root_ward=0
 	eruption_depth=0
@@ -1026,12 +1045,14 @@ func _start_expedition() -> void:
 			if index in [2,4]: _add_pickup("heal",center+Vector3(4,0,-3),index)
 	if chapter==2:
 		for index in [2,4]: _add_pickup("rescue",world.landmarks[index]["pos"]+Vector3(-3,0,3),index)
+	Exploration.populate(self)
 	state="playing"
 	ui.hide_modal()
 	ui.toast(_chapter_name()+" · 杀怪升级，7 级或 6 分钟后首领现身")
 	_play_chapter_book(false)
 
 func _clear_dynamic() -> void:
+	found_scroll = {}
 	for holder in [actors, effects, gates]:
 		for child in holder.get_children(): child.free()
 	enemies.clear()
@@ -1166,6 +1187,7 @@ func _advance_stage() -> void:
 			if stage_depth==5 and index in [1,2,4]: _add_pickup("voice",region["pos"]+Vector3(-3,0,3),index)
 			if stage_depth==4 and index in [2,4]: _add_pickup("anchor",region["pos"]+Vector3(-3,0,3),index)
 			if stage_depth==3 and index==1: _add_pickup("mengpo",region["pos"]+Vector3(0,0,-1),index)
+	Exploration.populate(self)
 	state="playing"
 	ui.hide_modal()
 	ui.set_combat_visible(true)
@@ -1247,6 +1269,7 @@ func _show_journal() -> void:
 	ui.show_modal("灯中记忆",body,[{"id":"resume","label":"继续探索"}],"本局主线")
 
 func _on_action(id: String) -> void:
+	if Exploration.handle(self, id): return
 	if state=="ending_voice":
 		if id=="ending_return": _show_final_choice()
 		return
@@ -1504,6 +1527,7 @@ func _room_title() -> String:
 	return world.landmarks[room_index]["name"] if not world.landmarks.is_empty() else "雾隐渡"
 
 func _update_hud() -> void:
+	if is_instance_valid(player): Exploration.update_labels(self)
 	if not is_instance_valid(ui) or not is_instance_valid(player): return
 	var boss_hp: float = 0
 	var boss_max: float = 0
@@ -1515,7 +1539,7 @@ func _update_hud() -> void:
 			boss_max=enemy["max_hp"]
 	if is_instance_valid(world.boss_place_title): world.boss_place_title.visible=boss_max<=0
 	var pickup: Dictionary = _nearby_pickup()
-	var prompt: String = "第 %d 境 · 修为 %d / 本境6分钟迎战首领"%[stage_depth,stage_entry_level+6]
+	var prompt: String = "击败首领通关 · 沿途寻找遗卷与宝箱"
 	if not pickup.is_empty(): prompt="交互 · "+_pickup_name(pickup["kind"])
 	var boss_dist: int = roundi(player.position.distance_to(world.landmarks[6]["pos"])) if journey_started else 0
 	var hud_costs: Array=[0.0,0.0,0.0]
@@ -1559,10 +1583,11 @@ func _add_pickup(kind: String, pos: Vector3, id: int) -> void:
 	box.size = Vector3(0.8,0.6,0.55) if kind=="chest" else Vector3(0.4,0.9,0.4)
 	if kind=="forge": box.size=Vector3(1.3,0.9,1.1)
 	mesh.mesh=box
-	if kind in ["rack","manual","portal","bed","memory","mengpo"]: mesh.visible=false
+	if kind in ["rack","manual","portal","bed","memory","mengpo","scroll"]: mesh.visible=false
 	mesh.material_override=_material(Color("78392f") if kind in ["chest","forge"] else Color("48564b"))
 	node.add_child(mesh)
 	mesh.position.y=0.35
+	Exploration.decorate(self, node, kind)
 	_ring(Vector3.ZERO,0.75,Color("7d5440"),0,node)
 	var label := Label3D.new()
 	label.text=_pickup_name(kind)
@@ -1583,7 +1608,9 @@ func _add_pickup(kind: String, pos: Vector3, id: int) -> void:
 	pickups.append({"kind":kind,"pos":pos,"id":id,"used":false,"node":node})
 
 func _pickup_name(kind: String) -> String:
-	return {"chest":"拾取遗珍","story":"阅读灯签","heal":"取用清露","forge":"炉台 · 锻造","rack":"兵器架 · 换装","bed":"茶桌 · 休整","manual":"藏经台 · 学武","restore_name":"归名 · 核对愿契","voice":"灯中人 · 听心愿","anchor":"归灯 · 稳住裂隙","memory":"亡魂 · 问愿","mengpo":"孟婆 · 问路","rescue":"求愿者 · 唤醒","portal":"传送阵 · 选择墨境"}.get(kind,"交互")
+	if kind == "scroll": return "拾取武学遗卷"
+	if kind == "supply": return "打开补给箱"
+	return {"chest":"打开遗珍宝箱","story":"阅读灯签","heal":"取用清露","forge":"炉台 · 锻造","rack":"兵器架 · 换装","bed":"茶桌 · 休整","manual":"藏经台 · 学武","restore_name":"归名 · 核对愿契","voice":"灯中人 · 听心愿","anchor":"归灯 · 稳住裂隙","memory":"亡魂 · 问愿","mengpo":"孟婆 · 问路","rescue":"求愿者 · 唤醒","portal":"传送阵 · 选择墨境"}.get(kind,"交互")
 
 func _nearby_pickup() -> Dictionary:
 	var best: Dictionary={}
@@ -1601,6 +1628,9 @@ func _interact() -> void:
 	var pickup: Dictionary=_nearby_pickup()
 	if pickup.is_empty():
 		ui.toast("靠近遗珍、灯签、清露或炉台后交互")
+		return
+	if pickup["kind"] == "scroll":
+		Exploration.show_scroll(self, pickup)
 		return
 	if pickup["kind"]=="rack":
 		_show_slot("blade")
@@ -1625,6 +1655,11 @@ func _interact() -> void:
 	pickup["used"]=true
 	pickup["node"].hide()
 	match pickup["kind"]:
+		"supply":
+			hp = minf(max_hp, hp + max_hp * 0.3)
+			energy = minf(100, energy + 40)
+			run_ash += 20
+			_queue_feedback("补给 · 气血与灯火恢复", Color("9bd0a0"))
 		"restore_name":
 			restored_names+=1
 			shield_hp=minf(60,shield_hp+15)
@@ -1848,6 +1883,8 @@ func _autoplay_test() -> void:
 			level_times.append({"level":level,"seconds":snappedf(run_seconds,0.1),"wave":wave_number})
 			observed_level=level
 		final_snapshot={"state":state,"stage":stage_depth,"boss_spawned":boss_spawned,"seconds":snappedf(run_seconds,0.1),"level":level,"kills":kills,"hp":snappedf(hp,0.1),"wave":wave_number,"ranks":skill_ranks.duplicate(),"boons":boon_counts.duplicate()}
+		final_snapshot["damage_sources"] = damage_sources.duplicate(true)
+		final_snapshot["last_damage_source"] = last_damage_source
 		if state=="transition":
 			stage_results.append(final_snapshot.duplicate(true))
 			if stage_depth>=2:
@@ -2418,7 +2455,7 @@ func _tick_blessings(dt: float) -> void:
 			if is_instance_valid(zone["node"]): zone["node"].queue_free()
 			blessings.erase(zone)
 			_ring(pos,3.4,Color("da7555"),0.35)
-			if nearby: _hurt_player(24.0)
+			if nearby: _hurt_player(24.0, "boss_blessing")
 			if state!="playing": return
 			continue
 		if zone["life"]<=1.5 and not zone.get("warned",false):
