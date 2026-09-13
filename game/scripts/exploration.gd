@@ -10,6 +10,13 @@ static func populate(g: Node) -> void:
 		var center: Vector3 = g.world.landmarks[index]["pos"]
 		var angle: float = random.randf_range(0, TAU)
 		var position: Vector3 = g.world.constrain_position(center + Vector3(cos(angle), 0, sin(angle)) * 6.0)
+		if g.world._in_ferry_water(position):
+			for step in range(1,13):
+				var turn: float=angle+step*TAU/12
+				var candidate: Vector3=g.world.constrain_position(center+Vector3(cos(turn),0,sin(turn))*6.0)
+				if not g.world._in_ferry_water(candidate):
+					position=candidate
+					break
 		g._add_pickup("scroll", position, index)
 		var pickup: Dictionary = g.pickups.back()
 		pickup["skill"] = available.pop_at(random.randi_range(0, available.size() - 1))
@@ -28,6 +35,10 @@ static func set_title(pickup: Dictionary, text: String) -> void:
 
 static func update_labels(g: Node) -> void:
 	for pickup in g.pickups:
+		var glimmer: Node3D=pickup["node"].get_node_or_null("DiscoveryGlimmer")
+		if glimmer:
+			glimmer.visible=not pickup["used"] and g.player.position.distance_to(pickup["pos"])<=11.0
+			glimmer.scale=Vector3.ONE*(0.92+0.08*sin(g.start_time*2.6))
 		if pickup["kind"] in ["scroll", "supply"] and not pickup["used"]:
 			pickup["node"].get_node("InteractionTitle").visible = g.player.position.distance_to(pickup["pos"]) <= 14.0
 
@@ -82,6 +93,22 @@ static func handle(g: Node, id: String) -> bool:
 
 static func decorate(g: Node, node: Node3D, kind: String) -> void:
 	if kind not in ["scroll", "chest"]: return
+	var glimmer := Node3D.new()
+	glimmer.name="DiscoveryGlimmer"
+	glimmer.visible=false
+	node.add_child(glimmer)
+	var ring: MeshInstance3D=g.world._torus(glimmer,Vector3(0,0.10,0),0.62,0.65,Color("bda46e"))
+	ring.material_override=g._material(Color(0.9,0.73,0.39,0.48))
+	if kind=="scroll":
+		for i in range(3):
+			var paper := MeshInstance3D.new()
+			var sheet := BoxMesh.new()
+			sheet.size=Vector3(0.22,0.02,0.32)
+			paper.mesh=sheet
+			paper.material_override=g._material(Color("e1cf9b"))
+			paper.position=Vector3(0.75+i*0.31,0.05,-0.3+i*0.12)
+			paper.rotation.y=i*0.8
+			glimmer.add_child(paper)
 	for index in range(3):
 		var part := MeshInstance3D.new()
 		var box := BoxMesh.new()

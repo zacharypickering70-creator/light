@@ -61,6 +61,12 @@ var dash_left: float = 0.0
 var immunity: float = 0.0
 var hit_stop: float = 0.0
 var attack_buffer: float = 0.0
+var attack_pose_duration: float = 0.20
+var cast_pose: float = 0.0
+var queued_skill: int = -1
+var skill_buffer: float = 0.0
+var dash_buffer: float = 0.0
+var buffered_dash_direction := Vector3.ZERO
 var attack_pose: float = 0.0
 var weapon_tween: Tween
 var pose_time: float = 0.0
@@ -215,9 +221,12 @@ func _process(delta: float) -> void:
 	if state in ["playing","chronicle","transition"]: world.tick_worshippers(minf(delta,0.04))
 	if state == "playing":
 		_tick_game(minf(delta, 0.04))
+	else:
+		_clear_combat_buffer()
 	_update_hud()
 
 func _tick_game(dt: float) -> void:
+	cast_pose=maxf(0,cast_pose-dt)
 	rooted_left=maxf(0,rooted_left-dt)
 	root_ward=maxf(0,root_ward-dt)
 	_update_root_mark()
@@ -246,6 +255,8 @@ func _tick_game(dt: float) -> void:
 	flame_cd=skill_cds[0]
 	ultimate_cd=maxf(0,ultimate_cd-dt)
 	immunity = maxf(0, immunity - dt)
+	_tick_combat_buffer(dt)
+	if state!="playing": return
 	combo_time -= dt
 	if combo_time <= 0: combo = 0
 	var move: Vector2 = Input.get_vector("left", "right", "up", "down")
@@ -253,7 +264,7 @@ func _tick_game(dt: float) -> void:
 	var dir := Vector3(move.x, 0, move.y)
 	if rooted_left>0: dir=Vector3.ZERO
 	if attack_buffer>0 or Input.is_action_pressed("attack") or ui.attack_held or (auto_attack and not _nearest_enemy(float(_weapon()["reach"])+0.5).is_empty()): _attack()
-	if Input.is_action_just_pressed("dash"): _dash(dir)
+	if Input.is_action_just_pressed("dash"): _request_dash(dir)
 	if Input.is_action_just_pressed("flame"): _flame()
 	if Input.is_action_just_pressed("interact"): _interact()
 	if state != "playing": return
@@ -330,10 +341,11 @@ func _base_damage() -> float:
 	return value
 
 func _attack() -> void:
-	if state != "playing" or attack_cd > 0 or dash_left > 0: return
+	if state != "playing" or attack_cd > 0 or dash_left > 0 or cast_pose > 0.10: return
 	attack_buffer=0
-	attack_pose=0.20
 	var data: Dictionary = _weapon()
+	attack_pose_duration=clampf(float(data["interval"])*0.6,0.14,0.32)
+	attack_pose=attack_pose_duration
 	var target: Dictionary = _nearest_enemy(float(data["reach"])+2.0)
 	if not target.is_empty(): facing = (target["node"].position-player.position).normalized()
 	attack_cd = float(data["interval"])*float(Techniques.ARTS[normal_art]["speed"])*pow(0.88,mini(_boon("quick"),7))
@@ -376,6 +388,7 @@ func _attack() -> void:
 			weapon.rotation.y=-1.3
 			tween.tween_property(weapon,"rotation:y",0.0,0.22)
 	var hit: bool = false
+	var impact_count: int = 0
 	for enemy in enemies.duplicate():
 		var diff: Vector3 = enemy["node"].position-origin
 		var in_shape: bool = diff.length() <= reach+enemy["radius"] and (diff.normalized().dot(facing)>float(Techniques.ARTS[normal_art]["arc"]) or diff.length()<0.85)
@@ -386,6 +399,9 @@ func _attack() -> void:
 			if rng.randf()<0.18*_boon("frostbite"): enemy["slow"]=2.0*(1+0.2*_boon("long_control"))
 			if rng.randf()<0.20*_boon("venom"): enemy["poison"]=4.0
 			if weapon_id=="long_spear" and enemy.get("slow",0.0)>0: amount*=1.35
+			if impact_count < (2 if quality=="low" else 4):
+				_strike_impact(enemy["node"].position+Vector3.UP, color, combo==3)
+				impact_count+=1
 			_damage_enemy(enemy,amount,origin)
 			if state!="playing": return
 			energy=minf(100,energy+6+3*_boon("energy"))
@@ -398,7 +414,7 @@ func _attack() -> void:
 	if hit:
 		ultimate_charge=minf(100,ultimate_charge+3*(1+0.2*_boon("resolve")))
 		tutorial_flags["attack"]=true
-		hit_stop=0.035 if combo!=3 else 0.055
+		hit_stop=(0.028 if data["interval"]<0.3 else 0.045) if combo!=3 else 0.065
 		shake=maxf(shake,0.10 if combo!=3 else 0.22)
 		_sfx("impactPunch_heavy_000.ogg" if progress["equipped"]["blade"]=="heavy_cleaver" or combo==3 else "impactMetal_light_000.ogg",-9)
 		spark_hits+=1
@@ -415,8 +431,8 @@ func _attack() -> void:
 func _dash(direction: Vector3 = Vector3.ZERO) -> void:
 	if state != "playing" or dash_cd > 0:
 		return
-	hit_stop=0
-	attack_pose=0
+	_cancel_weapon_pose()
+	cast_pose=0
 	rooted_left=0
 	root_ward=0.8
 	blessing_exposure=0
@@ -439,7 +455,7 @@ func _dash(direction: Vector3 = Vector3.ZERO) -> void:
 	_tone(500, 0.07, 0.07)
 
 func _flame() -> void:
-	_cast_skill(0)
+	_request_skill(0)
 
 func _cast_skill(slot: int) -> void:
 	if state!="playing" or slot<0 or slot>=3: return
@@ -458,6 +474,8 @@ func _cast_skill(slot: int) -> void:
 	if energy<cost:
 		ui.toast("灯火不足 · 普攻命中可恢复")
 		return
+	_cancel_weapon_pose()
+	cast_pose=0.24
 	varied_cast=id!=last_cast
 	last_cast=id
 	energy-=cost
@@ -818,11 +836,13 @@ func _animate_player(dt: float, direction: Vector3) -> void:
 	if not body: return
 	var moving: float=direction.length()
 	pose_time+=dt*(12.0 if moving>0.1 else 2.0)
-	var strike: float=sin(clampf(attack_pose/0.20,0,1)*PI)
+	var strike: float=sin((0.2+0.8*(1.0-clampf(attack_pose/attack_pose_duration,0,1)))*PI) if attack_pose>0 else 0.0
+	var weight: float=1.35 if progress["equipped"]["blade"]=="heavy_cleaver" else 1.0
+	var casting: float=sin(clampf(cast_pose/0.24,0,1)*PI)
 	var cloak: Node3D=body.get_node_or_null("Cloak")
 	if cloak: cloak.rotation.x=sin(pose_time*0.55)*0.025+moving*0.08
-	body.rotation.x=lerpf(body.rotation.x,(-0.22 if dash_left>0 else -0.07*moving)-strike*0.12,minf(1,dt*24))
-	body.rotation.y=strike*(0.32 if combo%2==0 else -0.32)
+	body.rotation.x=lerpf(body.rotation.x,(-0.22 if dash_left>0 else -0.07*moving)-strike*0.12*weight,minf(1,dt*24))
+	body.rotation.y=strike*(0.32 if combo%2==0 else -0.32)*weight
 	body.rotation.z=sin(pose_time)*0.035*moving
 	for side in ["Left","Right"]:
 		var leg: Node3D=body.get_node_or_null(side+"Leg")
@@ -830,7 +850,7 @@ func _animate_player(dt: float, direction: Vector3) -> void:
 			leg.rotation.x=sin(pose_time+(PI if side=="Right" else 0))*0.58*moving
 		var arm: Node3D=body.get_node_or_null(side+"Arm")
 		if arm:
-			arm.rotation.x=sin(pose_time+(PI if side=="Left" else 0))*0.22*moving-strike*0.65
+			arm.rotation.x=sin(pose_time+(PI if side=="Left" else 0))*0.22*moving-strike*0.65*weight-casting*(1.1 if side=="Left" else 0.35)
 
 func _kill_enemy(enemy: Dictionary) -> void:
 	ChapterFour.clear_marks(enemy)
@@ -932,6 +952,8 @@ func _reset_journey() -> void:
 	received_damage=0.0
 	attack_buffer=0
 	attack_pose=0
+	cast_pose=0
+	_clear_combat_buffer()
 	pose_time=0
 	_clear_dynamic()
 	journey_started=false
@@ -1052,6 +1074,8 @@ func _start_expedition() -> void:
 	_play_chapter_book(false)
 
 func _clear_dynamic() -> void:
+	_clear_combat_buffer()
+	cast_pose=0
 	found_scroll = {}
 	for holder in [actors, effects, gates]:
 		for child in holder.get_children(): child.free()
@@ -1373,7 +1397,7 @@ func _on_action(id: String) -> void:
 		_show_catalog(state)
 		return
 	if id.begins_with("skill_") and state=="playing":
-		_cast_skill(int(id.trim_prefix("skill_")))
+		_request_skill(int(id.trim_prefix("skill_")))
 		return
 	if id=="ultimate":
 		_ultimate()
@@ -1494,7 +1518,7 @@ func _on_action(id: String) -> void:
 		"dash":
 			var move: Vector2 = ui.move_vector
 			if move.length()<0.1: move=Input.get_vector("left","right","up","down")
-			_dash(Vector3(move.x,0,move.y))
+			_request_dash(Vector3(move.x,0,move.y))
 		"flame": _flame()
 		"interact": _interact()
 		"map":
@@ -2630,3 +2654,60 @@ func _show_final_choice() -> void:
 		{"id":"ending_open","label":"留门" if final_voices.size()==3 else "留门 · 心愿 %d / 3"%final_voices.size(),"detail":"停止借命，归还名字，让去留由每个人决定","disabled":final_voices.size()<3}]
 	if final_voices.size()<3: cards.append({"id":"ending_listen","label":"听灯中人说完","detail":"补听尚未听过的心愿，再作决定"})
 	ui.show_modal("灯为谁明","三圣母：看清每条路的代价，再给出你的回答。\n这次选择决定本次故事结局。收卷后仍可归家，或挑战卷外余烬回响。",cards,"终章抉择")
+
+
+func _clear_combat_buffer() -> void:
+	queued_skill=-1
+	skill_buffer=0
+	dash_buffer=0
+	attack_buffer=0
+
+func _request_skill(slot: int) -> void:
+	if state!="playing" or slot<0 or slot>=3: return
+	if skill_cds[slot]>0.16: return
+	if dash_left>0 or skill_cds[slot]>0:
+		queued_skill=slot
+		skill_buffer=0.22
+	else:
+		queued_skill=-1
+		skill_buffer=0
+		_cast_skill(slot)
+
+func _request_dash(direction: Vector3) -> void:
+	if state!="playing" or dash_cd>0.14: return
+	if dash_cd>0:
+		dash_buffer=0.20
+		buffered_dash_direction=direction
+	else:
+		dash_buffer=0
+		_dash(direction)
+
+func _tick_combat_buffer(dt: float) -> void:
+	dash_buffer=maxf(0,dash_buffer-dt)
+	skill_buffer=maxf(0,skill_buffer-dt)
+	if dash_buffer>0 and dash_cd<=0:
+		dash_buffer=0
+		_dash(buffered_dash_direction)
+	if skill_buffer>0 and queued_skill>=0 and dash_left<=0 and skill_cds[queued_skill]<=0:
+		var slot: int=queued_skill
+		queued_skill=-1
+		skill_buffer=0
+		_cast_skill(slot)
+	if skill_buffer<=0: queued_skill=-1
+
+func _cancel_weapon_pose() -> void:
+	hit_stop=0
+	attack_pose=0
+	if weapon_tween and weapon_tween.is_valid(): weapon_tween.kill()
+	var socket: Node3D=player.find_child("Weapon",true,false)
+	if socket:
+		socket.position=Vector3.ZERO
+		socket.rotation=Vector3.ZERO
+
+func _strike_impact(pos: Vector3, color: Color, finisher: bool) -> void:
+	if effects.get_child_count()>150: return
+	var side: Vector3=Vector3(-facing.z,0,facing.x)
+	var size: float=0.60 if finisher else 0.36
+	_bolt(pos-side*size-Vector3.UP*size,pos+side*size+Vector3.UP*size,color)
+	if finisher:
+		_bolt(pos+side*size-Vector3.UP*size,pos-side*size+Vector3.UP*size,Color("fff0c9"))

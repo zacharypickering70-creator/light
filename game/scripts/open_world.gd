@@ -220,8 +220,12 @@ func build_map(value: int, preview: bool = false) -> void:
 			_box(_room,Vector3(-4,1.7,-5),Vector3(1.8,3.4,0.8),Color("64645b"))
 			_box(_room,Vector3(-4,3.5,-5),Vector3(2.5,0.22,1.25),Color("292d2b"))
 		_region_details(id)
+		if chapter==1: preload("res://scripts/ferry_art.gd").dress(self,id)
 		for side in [-1.0,1.0]:
-			_tree(Vector3(side*9,0,-7),side,0.9)
+			var tree_pos := Vector3(side*9,0,-7)
+			if chapter==1 and ((id==3 and side>0) or (id==4 and side<0)):
+				tree_pos=Vector3(side*14,0,-10)
+			_tree(tree_pos,side,0.9)
 		if id != 0 and id != 6:
 			_lantern(Vector3(5,0,4),0.8,Color("a74432"),false)
 		var title := Label3D.new()
@@ -245,7 +249,7 @@ func build_map(value: int, preview: bool = false) -> void:
 	_room = root_art
 	for i in range(95):
 		var p := Vector3(_rng.randf_range(-54,54),0,_rng.randf_range(-54,54))
-		if p.length() > 55 or _near_landmark(p,10): continue
+		if p.length() > 55 or _near_landmark(p,10) or _in_ferry_water(p): continue
 		if i % 3 == 0:
 			_tree(p, 1.0 if i%2==0 else -1.0,_rng.randf_range(0.55,1.05))
 			obstacles.append({"pos":p,"radius":0.6})
@@ -270,9 +274,7 @@ func _near_landmark(p: Vector3, radius: float) -> bool:
 	return false
 
 func _boat(pos: Vector3) -> void:
-	var hull := _cylinder(_room,pos+Vector3(0,0.2,0),0.8,0.6,0.35,Color("55564d"),10)
-	hull.scale = Vector3(1.5,1,4)
-	_beam(_room,pos+Vector3(-1,0.5,-3),pos+Vector3(1.4,0.7,3),0.07,Color("323631"))
+	preload("res://scripts/ferry_art.gd").boat(self,pos)
 
 func _bamboo(pos: Vector3) -> void:
 	var height: float=_rng.randf_range(4.6,6.2)
@@ -389,7 +391,7 @@ func _home_courtyard() -> void:
 	obstacles.append({"pos":Vector3(-4,0,-6.9),"radius":1.2})
 
 func _dock_details() -> void:
-	_box(_room,Vector3(8,0.0,-5),Vector3(8,0.05,9),Color("939f97"))
+	preload("res://scripts/ferry_art.gd").water(self,Vector3(8,0.015,-5),4.3,4.8)
 	for j in range(12):
 		_box(_room,Vector3(3.5,0.16,-8+j*0.55),Vector3(3.8,0.12,0.48),Color("797564").darkened((j%3)*0.04))
 	for j in range(4):
@@ -400,7 +402,7 @@ func _dock_details() -> void:
 	for i in range(3): _box(_room,Vector3(-1+i*1.0,0.4,-6),Vector3(0.85,0.8,0.85),Color("6d6955"))
 
 func _pond_details() -> void:
-	_cylinder(_room,Vector3(-6,0.005,-5),4.5,4.5,0.04,Color("9daa9d"),32)
+	preload("res://scripts/ferry_art.gd").water(self,Vector3(-6,0.015,-5),4.5,4.3)
 	for i in range(12):
 		var a: float=i*TAU/12
 		_rock(Vector3(-6+cos(a)*4.5,0,-5+sin(a)*4.5),0.45)
@@ -610,7 +612,7 @@ func _ground_dressing(home: bool) -> void:
 		var distance: float = sqrt(decor_rng.randf()) * radius
 		var center := Vector3(cos(angle) * distance, 0.015, sin(angle) * distance)
 		if home and distance < 8.0: continue
-		if not home and _near_landmark(center, 4.5): continue
+		if not home and (_near_landmark(center, 4.5) or _in_ferry_water(center)): continue
 		for blade in range(5):
 			var turn: float = decor_rng.randf() * TAU
 			var reach: float = decor_rng.randf_range(0.25, 0.65)
@@ -631,8 +633,16 @@ func _ground_dressing(home: bool) -> void:
 		var angle: float = decor_rng.randf()*TAU
 		var distance: float = decor_rng.randf_range(9.0,radius)
 		var center := Vector3(cos(angle)*distance,0.015,sin(angle)*distance)
-		if not home and _near_landmark(center,5.0): continue
+		if not home and (_near_landmark(center,5.0) or _in_ferry_water(center)): continue
 		var stone := _cylinder(dressing,center,0.3,0.4,0.055,Color("a3a796"),5)
 		stone.scale = Vector3(decor_rng.randf_range(0.7,1.6),1,decor_rng.randf_range(0.5,1.1))
 		stone.rotation.y = angle
 	_batch_static(dressing)
+
+
+func _in_ferry_water(pos: Vector3) -> bool:
+	if chapter!=1 or landmarks.size()<7: return false
+	for entry in [[3,Vector3(8,0,-5),5.0,5.5],[4,Vector3(-6,0,-5),5.1,4.9]]:
+		var delta: Vector3=pos-landmarks[entry[0]]["pos"]-entry[1]
+		if pow(delta.x/entry[2],2)+pow(delta.z/entry[3],2)<1.0: return true
+	return false
