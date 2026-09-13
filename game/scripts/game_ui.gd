@@ -36,6 +36,9 @@ var _experience: ProgressBar
 var _experience_text: Label
 var _experience_fill: StyleBoxFlat
 var _experience_hint: Label
+var _name_label: Label
+var _left_stack: VBoxContainer
+var _quest_copy: VBoxContainer
 var _boss_box: VBoxContainer
 var _boss_label: Label
 var _boss_bar: ProgressBar
@@ -69,18 +72,19 @@ class InkMap extends Control:
 	func _draw() -> void:
 		var center: Vector2=size*0.5
 		draw_style_box(_paper_box(),Rect2(Vector2.ZERO,size))
-		draw_arc(center,62,0,TAU,72,Color(0.5,0.5,0.45,0.35),1,true)
+		var map_scale: float = (minf(size.x, size.y) - 44.0) / 108.0
+		draw_arc(center,54.0 * map_scale,0,TAU,72,Color(0.5,0.5,0.45,0.35),1,true)
 		var font: Font=get_theme_default_font()
 		draw_string(font,Vector2(13,23),("竹隐居" if home else "已探山水"),HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("424b40"))
 		for item in points:
 			var p: Vector3=item["pos"]
-			var dot: Vector2=center+Vector2(p.x,p.z)*1.04
+			var dot: Vector2=center+Vector2(p.x,p.z)*map_scale
 			var id: int=item["id"]
 			var color: Color=Color("9d3c31") if id==6 and boss_active else Color("586458")
 			draw_circle(dot,4 if id==6 else 3,color)
 			var label: String=[("家" if home else "落"),"竹","亭","渡","汀","碑","首领"][id]
 			draw_string(font,dot+Vector2(5,4),label,HORIZONTAL_ALIGNMENT_LEFT,-1,11,color)
-		var hero: Vector2=center+player*1.04
+		var hero: Vector2=center+player*map_scale
 		draw_circle(hero,4.5,Color("b44935"))
 		draw_arc(hero,7,0,TAU,20,Color("f9f3e2"),1.5,true)
 		draw_string(font,Vector2(13,size.y-10),"朱砂 · 你",HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("61695f"))
@@ -191,6 +195,8 @@ func _build_ui() -> void:
 	_build_map_ui()
 	_build_modal()
 	_build_toast()
+	_root.resized.connect(_layout_transient)
+	call_deferred("_layout_transient")
 
 
 func _build_hud() -> void:
@@ -199,25 +205,30 @@ func _build_hud() -> void:
 	_combat.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.add_child(_combat)
 
+	_left_stack = VBoxContainer.new()
+	_left_stack.position = Vector2(18, 18)
+	_left_stack.size.x = 282
+	_left_stack.add_theme_constant_override("separation", 8)
+	_left_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_combat.add_child(_left_stack)
 	var left_panel: PanelContainer = PanelContainer.new()
-	left_panel.position = Vector2(18, 18)
-	left_panel.custom_minimum_size = Vector2(270, 0)
+	left_panel.custom_minimum_size = Vector2(282, 0)
 	left_panel.add_theme_stylebox_override("panel", _box(Color(0.91, 0.89, 0.83, 0.94), Color(0.5, 0.47, 0.34, 0.4), 4, 1))
 	left_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_combat.add_child(left_panel)
+	_left_stack.add_child(left_panel)
 	var left_margin: MarginContainer = _margin(12, 9, 12, 10)
 	left_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	left_panel.add_child(left_margin)
 	var stats: VBoxContainer = VBoxContainer.new()
-	stats.add_theme_constant_override("separation", 7)
+	stats.add_theme_constant_override("separation", 4)
 	stats.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	left_margin.add_child(stats)
 	var caption: HBoxContainer = HBoxContainer.new()
 	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stats.add_child(caption)
-	var name_label: Label = _label("提灯人", 18, PAPER)
-	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	caption.add_child(name_label)
+	_name_label = _label("提灯人 · 修为 1", 16, PAPER)
+	_name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	caption.add_child(_name_label)
 	_health_text = _label("100 / 100", 15, MUTED)
 	caption.add_child(_health_text)
 	_health = _bar(RED, 10)
@@ -233,36 +244,36 @@ func _build_hud() -> void:
 	_resource_text=_label("",13,PAPER)
 	stats.add_child(_resource_text)
 
-	var quest_bg:=Panel.new()
-	quest_bg.position=Vector2(18,166)
-	quest_bg.size=Vector2(295,164)
+	var quest_bg:=PanelContainer.new()
 	quest_bg.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	quest_bg.add_theme_stylebox_override("panel",_box(Color(0.93,0.91,0.85,0.94),Color(0.5,0.47,0.34,0.25),3,1))
-	_combat.add_child(quest_bg)
+	_left_stack.add_child(quest_bg)
+	var quest_margin: MarginContainer = _margin(12, 8, 12, 8)
+	quest_bg.add_child(quest_margin)
 	var quest_panel: VBoxContainer = VBoxContainer.new()
-	quest_panel.position = Vector2(26, 172)
-	quest_panel.custom_minimum_size = Vector2(275, 0)
-	quest_panel.add_theme_constant_override("separation", 6)
+	_quest_copy = quest_panel
+	quest_panel.add_theme_constant_override("separation", 3)
 	quest_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_combat.add_child(quest_panel)
-	_room_label = _label("残灯庵", 20, PAPER)
+	quest_margin.add_child(quest_panel)
+	_room_label = _label("残灯庵", 18, PAPER)
 	_room_label.add_theme_color_override("font_shadow_color", Color(0.96, 0.94, 0.88, 0.75))
 	_room_label.add_theme_constant_override("shadow_offset_x", 1)
 	_room_label.add_theme_constant_override("shadow_offset_y", 2)
 	quest_panel.add_child(_room_label)
-	_objective_label = _label("循灯而行，寻回命火。", 16, PAPER)
+	_objective_label = _label("循灯而行，寻回命火。", 14, PAPER)
 	_objective_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	quest_panel.add_child(_objective_label)
 	_enemy_label = _label("", 14, GOLD)
 	quest_panel.add_child(_enemy_label)
+	_enemy_label.hide()
 
 	var top_right: HBoxContainer = HBoxContainer.new()
 	top_right.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	top_right.offset_left = -273
-	top_right.offset_right = -28
-	top_right.offset_top = 25
+	top_right.offset_left = -250
+	top_right.offset_right = -18
+	top_right.offset_top = 18
 	top_right.offset_bottom = 70
-	top_right.add_theme_constant_override("separation", 16)
+	top_right.add_theme_constant_override("separation", 12)
 	top_right.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_combat.add_child(top_right)
 	_ash_label = _label("烬砂  0", 18, GOLD)
@@ -270,7 +281,7 @@ func _build_hud() -> void:
 	_ash_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_ash_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	top_right.add_child(_ash_label)
-	var pause_button: Button = _button("暂歇  Ⅱ", "pause", Vector2(105, 44))
+	var pause_button: Button = _button("暂歇  Ⅱ", "pause", Vector2(100, 48))
 	pause_button.add_theme_font_size_override("font_size", 16)
 	top_right.add_child(pause_button)
 	_combat_buttons["pause"] = pause_button
@@ -300,43 +311,43 @@ func _build_hud() -> void:
 
 	var ability_row:=Control.new()
 	ability_row.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	ability_row.offset_left=-425
+	ability_row.offset_left=-410
 	ability_row.offset_right=-18
-	ability_row.offset_top=-354
-	ability_row.offset_bottom=-18
+	ability_row.offset_top=-315
+	ability_row.offset_bottom=-20
 	ability_row.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	_combat.add_child(ability_row)
-	var attack_button: Button=_round_button("普攻","attack","attack",108,Color("bd9c64"))
-	attack_button.position=Vector2(298,210)
+	var attack_button: Button=_round_button("普攻","attack","attack",114,Color("bd9c64"))
+	attack_button.position=Vector2(278,172)
 	ability_row.add_child(attack_button)
 	_combat_buttons["attack"]=attack_button
-	var positions: Array[Vector2]=[Vector2(165,232),Vector2(190,127),Vector2(278,27)]
+	var positions: Array[Vector2]=[Vector2(174,194),Vector2(164,92),Vector2(278,64)]
 	for i in range(3):
-		var button: Button=_round_button("学习","skill_"+str(i),"locked",86,Color("96b7a5"))
+		var button: Button=_round_button("学习","skill_"+str(i),"locked",90,Color("96b7a5"))
 		button.position=positions[i]
 		ability_row.add_child(button)
 		_skill_buttons.append(button)
 		_combat_buttons["skill_"+str(i)]=button
 	_flame_button=_skill_buttons[0]
-	_dash_button=_round_button("踏影","dash","dash",80,Color("afbaaa"))
-	_dash_button.position=Vector2(65,234)
+	_dash_button=_round_button("踏影","dash","dash",84,Color("afbaaa"))
+	_dash_button.position=Vector2(62,204)
 	ability_row.add_child(_dash_button)
 	_combat_buttons["dash"]=_dash_button
-	_ultimate_button=_round_button("绝技","ultimate","ultimate",92,Color("d8a5b8"))
-	_ultimate_button.position=Vector2(76,118)
+	_ultimate_button=_round_button("绝技","ultimate","ultimate",100,Color("d8a5b8"))
+	_ultimate_button.position=Vector2(48,86)
 	ability_row.add_child(_ultimate_button)
 	_combat_buttons["ultimate"]=_ultimate_button
 	var auto_button: Button=_button("自动：关","auto",Vector2(104,48))
-	auto_button.position=Vector2(153,56)
+	auto_button.position=Vector2(162,14)
 	auto_button.add_theme_font_size_override("font_size",16)
 	ability_row.add_child(auto_button)
 	_combat_buttons["auto"]=auto_button
 	_joystick = TouchStick.new()
 	_joystick.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	_joystick.offset_left = 35
-	_joystick.offset_right = 195
-	_joystick.offset_top = -200
-	_joystick.offset_bottom = -40
+	_joystick.offset_left = 38
+	_joystick.offset_right = 214
+	_joystick.offset_top = -202
+	_joystick.offset_bottom = -26
 	_joystick.visible = _is_touch
 	_joystick.moved.connect(_on_stick_moved)
 	_combat.add_child(_joystick)
@@ -344,8 +355,8 @@ func _build_hud() -> void:
 	_experience_hint.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	_experience_hint.offset_left = -155
 	_experience_hint.offset_right = 155
-	_experience_hint.offset_top = -122
-	_experience_hint.offset_bottom = -99
+	_experience_hint.offset_top = -132
+	_experience_hint.offset_bottom = -104
 	_experience_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_experience_hint.add_theme_color_override("font_outline_color", Color("242c27"))
 	_experience_hint.add_theme_constant_override("outline_size", 5)
@@ -406,8 +417,8 @@ func _build_toast() -> void:
 	_toast_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	_toast_panel.offset_left = -250
 	_toast_panel.offset_right = 250
-	_toast_panel.offset_top = -180
-	_toast_panel.offset_bottom = -124
+	_toast_panel.offset_top = -202
+	_toast_panel.offset_bottom = -146
 	_toast_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_toast_panel.add_theme_stylebox_override("panel", _box(Color(0.92, 0.89, 0.80, 0.97), GOLD, 5, 1))
 	_root.add_child(_toast_panel)
@@ -432,6 +443,7 @@ func update_hud(data: Dictionary) -> void:
 	var maximum_hp: float = maxf(1.0, float(data.get("max_hp", 100.0)))
 	_health.max_value = maximum_hp
 	_health.value = hp
+	_name_label.text = "提灯人 · 修为 %d" % int(data.get("level", 1))
 	_health_text.text = "%d / %d" % [ceili(maxf(0.0, hp)), ceili(maximum_hp)]
 	_energy.max_value = maxf(1.0, float(data.get("max_energy", 100.0)))
 	_energy.value = float(data.get("energy", 100.0))
@@ -447,7 +459,8 @@ func update_hud(data: Dictionary) -> void:
 	_experience_text.add_theme_color_override("font_color", Color("864416") if near_level else PAPER)
 	_experience_hint.visible = near_level and not data.get("home", false)
 	_experience_hint.text = "即将升级 · 还差 %d 经验" % int(_experience.max_value - _experience.value)
-	_room_label.text = str(data.get("title","残灯庵"))
+	var elapsed: int = int(data.get("seconds", 0))
+	_room_label.text = str(data.get("title","残灯庵")) + ("  %02d:%02d" % [elapsed / 60, elapsed % 60] if not data.get("home", false) else "")
 	_objective_label.text = str(data.get("objective", "循灯而行，寻回命火。"))
 	var remaining: int = int(data.get("enemies", 0))
 	_enemy_label.text = "%d 连斩 · 附近 %d" % [int(data.get("streak",0)),remaining] if int(data.get("streak",0))>1 else "附近敌人 %d"%remaining
@@ -461,7 +474,11 @@ func update_hud(data: Dictionary) -> void:
 	_boss_label.text = str(data.get("boss_name", "守灯人"))
 	var dash_cd: float = maxf(0.0, float(data.get("dash_cd", 0.0)))
 	var flame_cd: float = maxf(0.0, float(data.get("flame_cd", 0.0)))
-	_ability_caption(_dash_button,"%.1f"%dash_cd if dash_cd>0.05 else "踏影")
+	_ability_caption(_dash_button,"踏影")
+	var dash_countdown: Label = _dash_button.get_meta("cooldown")
+	dash_countdown.text = "%.1f" % dash_cd if dash_cd > 0.05 else ""
+	var dash_glyph: TextureRect = _dash_button.get_meta("glyph")
+	dash_glyph.modulate.a = 0.22 if dash_cd > 0.05 else 1.0
 	var learned: Array=data.get("learned",[])
 	var cooldowns: Array=data.get("skill_cds",[0.0,0.0,0.0])
 	for i in range(3):
@@ -480,7 +497,9 @@ func update_hud(data: Dictionary) -> void:
 		glyph.modulate.a=0.22 if float(cooldowns[i])>0.05 else 1.0
 		button.modulate=Color.WHITE if ready and float(cooldowns[i])<=0 else Color(0.68,0.72,0.69)
 	var charge: float=float(data.get("ultimate_charge",0))
-	_ability_caption(_ultimate_button,str(data.get("ultimate_name","绝技")) if charge>=100 else "%d%%"%int(charge))
+	_ability_caption(_ultimate_button,str(data.get("ultimate_name","绝技")))
+	var ultimate_meter: Label = _ultimate_button.get_meta("cooldown")
+	ultimate_meter.text = "%d%%" % int(charge) if charge < 100 else "就绪"
 	var ult: String=data.get("ultimate_id","lotus")
 	var ult_glyph: TextureRect=_ultimate_button.get_meta("glyph")
 	if ult_glyph.get_meta("ult","")!=ult:
@@ -488,15 +507,15 @@ func update_hud(data: Dictionary) -> void:
 		ult_glyph.texture=load("res://assets/ui/"+icons[ult]+".svg")
 		ult_glyph.modulate=Color(Techniques.ULTIMATES[ult]["color"])
 		ult_glyph.set_meta("ult",ult)
-	_ultimate_button.modulate=Color.WHITE if charge>=100 else Color(0.65,0.62,0.67)
+	ult_glyph.modulate.a = 0.30 if charge < 100 else 0.65
+	_ultimate_button.modulate=Color.WHITE if charge>=100 else Color(0.88,0.86,0.90)
 	_combat_buttons["weapons"].visible=bool(data.get("home",false))
 	_combat_buttons["techniques"].visible=bool(data.get("home",false))
 	_combat_buttons["auto"].text="自动：开" if data.get("auto",false) else "自动：关"
 	_combat_buttons["interact"].visible=data.get("interact_available",false)
-	_combat_buttons["interact"].text="传送" if data.get("portal_near",false) else "交互"
-	var elapsed: int=int(data.get("seconds",0))
-	_progress_label.text="修为 %d  ·  %02d:%02d  ·  第 %d 波\n%s" % [int(data.get("level",1)),elapsed/60,elapsed%60,int(data.get("wave",0)),("首领已现身 · 距离 %d" % int(data.get("boss_dist",0))) if data.get("boss_spawned",false) else "首领：修为 %d / 本境6分钟"%int(data.get("boss_level",7))]
-	if data.get("home",false): _progress_label.text="竹隐居 · 从传送阵出发，逐关向前"
+	_combat_buttons["interact"].text=str(data.get("interact_label", "传送" if data.get("portal_near",false) else "交互"))
+	_progress_label.text="第 %d 波 · 附近 %d · 连斩 %d\n%s" % [int(data.get("wave",0)), remaining, int(data.get("streak",0)), ("首领已现身 · 距离 %d" % int(data.get("boss_dist",0))) if data.get("boss_spawned",false) else "首领：修为 %d / 本境6分钟"%int(data.get("boss_level",7))]
+	if data.get("home",false): _progress_label.text="安全区域 · 从传送阵出发"
 	_map_view.points=data.get("map_points",[])
 	_map_view.player=data.get("player_pos",Vector2.ZERO)
 	_map_view.boss_active=data.get("boss_spawned",false)
@@ -509,33 +528,32 @@ func update_hud(data: Dictionary) -> void:
 func _build_map_ui() -> void:
 	_map_view=InkMap.new()
 	_map_view.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	_map_view.offset_left=-180
+	_map_view.offset_left=-154
 	_map_view.offset_right=-18
-	_map_view.offset_top=82
-	_map_view.offset_bottom=244
+	_map_view.offset_top=78
+	_map_view.offset_bottom=214
 	_map_view.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	_combat.add_child(_map_view)
-	_progress_label=_label("",14,PAPER)
-	_progress_label.position=Vector2(26,280)
-	_progress_label.custom_minimum_size=Vector2(280,44)
-	_combat.add_child(_progress_label)
+	_progress_label=_label("",13,MUTED)
+	_quest_copy.add_child(_progress_label)
 	var utility:=HBoxContainer.new()
 	utility.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	utility.offset_left=-304
 	utility.offset_right=-18
-	utility.offset_top=252
-	utility.offset_bottom=300
+	utility.offset_top=226
+	utility.offset_bottom=274
 	utility.add_theme_constant_override("separation",8)
+	utility.alignment = BoxContainer.ALIGNMENT_END
 	_combat.add_child(utility)
 	for item in [["兵器","weapons"],["武学","techniques"],["行囊","inventory"]]:
 		var button: Button=_button(item[0],item[1],Vector2(88,48))
 		button.add_theme_font_size_override("font_size",18)
 		utility.add_child(button)
 		_combat_buttons[item[1]]=button
-	var interact: Button=_button("交互","interact",Vector2(108,62))
+	var interact: Button=_button("交互","interact",Vector2(132,62))
 	interact.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	interact.offset_left=-54
-	interact.offset_right=54
+	interact.offset_left=-66
+	interact.offset_right=66
 	interact.offset_top=-95
 	interact.offset_bottom=-33
 	_combat.add_child(interact)
@@ -574,6 +592,7 @@ func show_modal(title: String, description: String, buttons: Array, eyebrow: Str
 		padding.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		button.add_child(padding)
 		var copy: VBoxContainer = VBoxContainer.new()
+		button.set_meta("copy", copy)
 		copy.alignment = BoxContainer.ALIGNMENT_CENTER
 		copy.add_theme_constant_override("separation", 5)
 		copy.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -744,6 +763,12 @@ func _notification(what: int) -> void:
 		_reset_combat_input()
 
 
+func _layout_transient() -> void:
+	if not is_instance_valid(_toast_panel): return
+	var width: float = clampf(_root.size.x - 780.0, 240.0, 460.0)
+	_toast_panel.offset_left = -width * 0.5
+	_toast_panel.offset_right = width * 0.5
+
 func _apply_safe_area() -> void:
 	if not OS.has_feature("android") or not is_instance_valid(_root): return
 	var safe: Rect2i=DisplayServer.get_display_safe_area()
@@ -761,12 +786,13 @@ func _layout_modal() -> void:
 	if not is_instance_valid(_modal_panel):
 		return
 	var viewport_size: Vector2 = _root.size
-	var panel_width: float = minf(940.0, maxf(280.0, viewport_size.x - 48.0))
-	var panel_height: float = minf(644.0, maxf(280.0, viewport_size.y - 56.0))
+	var boon_choices: bool = _modal_buttons.size() == 3 and _modal_buttons.all(func(item): return str(item.get("id", "")).begins_with("boon_"))
+	var panel_width: float = minf(1040.0, maxf(280.0, viewport_size.x - 64.0))
+	var panel_height: float = minf(400.0 if boon_choices and panel_width >= 980.0 else 620.0, maxf(280.0, viewport_size.y - 48.0))
 	_modal_panel.position = (viewport_size - Vector2(panel_width, panel_height)) * 0.5
 	_modal_panel.size = Vector2(panel_width, panel_height)
-	_modal_grid.columns = 2 if _modal_buttons.size() >= 4 and panel_width >= 680.0 else 1
-	_modal_title.add_theme_font_size_override("font_size", 37 if panel_width >= 680.0 else 29)
+	_modal_grid.columns = 3 if boon_choices and panel_width >= 980.0 else (2 if _modal_buttons.size() >= 4 and panel_width >= 680.0 else 1)
+	_modal_title.add_theme_font_size_override("font_size", 32 if panel_width >= 680.0 else 27)
 	var columns: int = _modal_grid.columns
 	var card_width: float = (panel_width - 82.0 - float(columns - 1) * 13.0) / float(columns)
 	var copy_width: float = maxf(80.0, card_width - 40.0)
@@ -775,6 +801,8 @@ func _layout_modal() -> void:
 		var card: Button = child as Button
 		if card == null:
 			continue
+		var copy: VBoxContainer = card.get_meta("copy")
+		copy.alignment = BoxContainer.ALIGNMENT_BEGIN if boon_choices else BoxContainer.ALIGNMENT_CENTER
 		var title_text: String = str(card.get_meta("card_label", ""))
 		var detail_text: String = str(card.get_meta("card_detail", ""))
 		var title_height: float = font.get_multiline_string_size(title_text, HORIZONTAL_ALIGNMENT_LEFT, copy_width, 21).y
