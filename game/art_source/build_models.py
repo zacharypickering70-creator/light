@@ -151,6 +151,11 @@ def weapon(kind):
   else:
    m.blade([(-.055,-.26),(-.11,-1.32),(-.03,-1.57),(.23,-1.34),(.25,-.88),(.12,-.25)],.046,SILVER,col('91a69d'))
    m.tube([(.12,.02,-.4),(.19,.02,-.9),(.18,.02,-1.25)],[.022,.022,.014],GOLD,4)
+ # Dark inlaid groove emphasizes the blade bevel without extra mesh parts.
+ if kind in ['long_sword','ferry_blade']:
+  m.tube([(0,.047,-.38),(0,.047,-1.18)],[.012,.006],INK,4)
+ if kind=='heavy_cleaver':
+  for z in [-.87,-1.12]: m.tube([(-.2,.12,z),(-.38,.12,z-.03)],[.014,.01],INK,4)
  return m
 
 def ring(m,center,radius,color,n=24,thickness=.025):
@@ -240,6 +245,23 @@ def character(kind):
   detail.ellipsoid((0,1.93,.07),(.105,.11,.10),col('686e62'),10,5)
   detail.tube([(0,1.53,-.17),(0,1.36,-.21),(0,1.18,-.14)],[.1,.055,.001],col('bec2af'),8)
   cape.ribbon([(0,1.34,.2),(0,.93,.28),(0,.35,.25)],[.23,.31,.29],col('746b53'))
+ # Hem borders and folded lapels read at the mobile camera distance.
+ for side in [-1,1]:
+  detail.ribbon([(side*.25,.67,-.254),(side*.31,.24,-.205)],[.016,.019],GOLD)
+  detail.ribbon([(side*.18,1.34,-.188),(side*.06,1.17,-.228)],[.035,.025],PALE)
+ if player:
+  # A layered shoulder mantle and a tied travel pouch share the detail mesh.
+  for side in [-1,1]:
+   detail.ribbon([(side*.18,1.39,.04),(side*.38,1.27,.12),(side*.36,1.16,.16)],[.13,.13,.08],RED)
+  detail.ellipsoid((-.30,.80,.10),(.13,.16,.10),WOOD,8,4)
+  detail.tube([(-.32,.93,.01),(-.29,.73,-.005)],[.02,.012],GOLD,4)
+ if kind=='ranger':
+  for side in [-1,1]:
+   detail.ribbon([(side*.29,1.14,-.08),(side*.39,.68,-.03),(side*.44,.49,.04)],[.075,.06,.025],PALE)
+   detail.tube([(side*.29,1.08,-.095),(side*.37,.77,-.045)],[.009,.008],RED,4)
+ if brute:
+  for side in [-1,1]:
+   detail.loft([(1.25,.21,.23,side*.34,0),(1.42,.17,.19,side*.32,0)],col('8c9c91'),8)
  g.node('Cloth',body,mesh=coat);g.node('Details',body,mesh=detail)
  if cape.p:g.node('Cloak',body,mesh=cape)
  limb_nodes=[]

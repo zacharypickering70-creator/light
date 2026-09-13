@@ -1,28 +1,72 @@
 [
   {
     "file": "player.glb",
-    "triangles": 1972,
+    "triangles": 2100,
     "mesh_parts": 8,
     "clips": [
       "Walk",
       "Attack",
       "Idle"
     ],
-    "bytes": 244624
+    "bytes": 259968
   },
   {
     "file": "grunt.glb",
-    "triangles": 1604,
+    "triangles": 1628,
     "mesh_parts": 7,
     "clips": [
       "Walk",
       "Attack",
       "Idle"
     ],
-    "bytes": 199816
+    "bytes": 202668
   },
   {
     "file": "ranger.glb",
+    "triangles": 1730,
+    "mesh_parts": 8,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 215552
+  },
+  {
+    "file": "brute.glb",
+    "triangles": 2266,
+    "mesh_parts": 7,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 279236
+  },
+  {
+    "file": "boss_ferry.glb",
+    "triangles": 1932,
+    "mesh_parts": 7,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 239104
+  },
+  {
+    "file": "boss_wish.glb",
+    "triangles": 2424,
+    "mesh_parts": 8,
+    "clips": [
+      "Walk",
+      "Attack",
+      "Idle"
+    ],
+    "bytes": 298860
+  },
+  {
+    "file": "boss_judge.glb",
     "triangles": 1682,
     "mesh_parts": 8,
     "clips": [
@@ -33,106 +77,62 @@
     "bytes": 209824
   },
   {
-    "file": "brute.glb",
-    "triangles": 2162,
-    "mesh_parts": 7,
-    "clips": [
-      "Walk",
-      "Attack",
-      "Idle"
-    ],
-    "bytes": 266788
-  },
-  {
-    "file": "boss_ferry.glb",
-    "triangles": 1924,
-    "mesh_parts": 7,
-    "clips": [
-      "Walk",
-      "Attack",
-      "Idle"
-    ],
-    "bytes": 238156
-  },
-  {
-    "file": "boss_wish.glb",
-    "triangles": 2416,
-    "mesh_parts": 8,
-    "clips": [
-      "Walk",
-      "Attack",
-      "Idle"
-    ],
-    "bytes": 297912
-  },
-  {
-    "file": "boss_judge.glb",
-    "triangles": 1674,
-    "mesh_parts": 8,
-    "clips": [
-      "Walk",
-      "Attack",
-      "Idle"
-    ],
-    "bytes": 208864
-  },
-  {
     "file": "boss_erlang.glb",
-    "triangles": 2164,
+    "triangles": 2172,
     "mesh_parts": 8,
     "clips": [
       "Walk",
       "Attack",
       "Idle"
     ],
-    "bytes": 267660
+    "bytes": 268616
   },
   {
     "file": "boss_master.glb",
-    "triangles": 1948,
+    "triangles": 1956,
     "mesh_parts": 8,
     "clips": [
       "Walk",
       "Attack",
       "Idle"
     ],
-    "bytes": 241664
+    "bytes": 242624
   },
   {
     "file": "boss_debt.glb",
-    "triangles": 2354,
+    "triangles": 2362,
     "mesh_parts": 8,
     "clips": [
       "Walk",
       "Attack",
       "Idle"
     ],
-    "bytes": 290424
+    "bytes": 291384
   },
   {
     "file": "dummy.glb",
-    "triangles": 1698,
+    "triangles": 1706,
     "mesh_parts": 7,
     "clips": [
       "Walk",
       "Attack",
       "Idle"
     ],
-    "bytes": 211060
+    "bytes": 212016
   },
   {
     "file": "ferry_blade.glb",
-    "triangles": 200,
+    "triangles": 216,
     "mesh_parts": 1,
     "clips": [],
-    "bytes": 25108
+    "bytes": 27012
   },
   {
     "file": "long_sword.glb",
-    "triangles": 178,
+    "triangles": 194,
     "mesh_parts": 1,
     "clips": [],
-    "bytes": 22476
+    "bytes": 24384
   },
   {
     "file": "long_spear.glb",
@@ -150,10 +150,10 @@
   },
   {
     "file": "heavy_cleaver.glb",
-    "triangles": 60,
+    "triangles": 92,
     "mesh_parts": 1,
     "clips": [],
-    "bytes": 8276
+    "bytes": 12116
   },
   {
     "file": "oar.glb",

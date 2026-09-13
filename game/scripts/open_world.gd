@@ -177,6 +177,7 @@ func build_map(value: int, preview: bool = false) -> void:
 		for i in range(6):
 			var a: float=i*TAU/6
 			_cylinder(_room,Vector3(8+cos(a)*2,0.2,4+sin(a)*2),0.12,0.25,0.4,Color("ada483"),6)
+		_ground_dressing(true)
 		return
 	for landmark in landmarks:
 		var region := Node3D.new()
@@ -253,6 +254,7 @@ func build_map(value: int, preview: bool = false) -> void:
 			obstacles.append({"pos":p,"radius":0.7})
 		else:
 			_bamboo(p)
+	_ground_dressing(false)
 	# Distant mountains blend into the paper background without partitioning the land.
 	for i in range(30):
 		var angle: float = i*TAU/30
@@ -304,6 +306,7 @@ func _bamboo(pos: Vector3) -> void:
 	leaf_material.cull_mode=BaseMaterial3D.CULL_DISABLED
 	mesh.material_override=leaf_material
 	stalk.add_child(mesh)
+	_batch_static(stalk)
 
 func constrain_position(pos: Vector3) -> Vector3:
 	var flat := Vector2(pos.x,pos.z).limit_length(map_radius)
@@ -589,3 +592,47 @@ func _city_region(id: int) -> void:
 		for i in range(6): _box(_room,Vector3(0,2.6-i*.4,-2.68),Vector3(1.4,.08,.03),Color("d5c59d"))
 	else:
 		for side in [-1,1]: _pavilion(Vector3(side*5,0,3),0.65)
+
+
+func _ground_dressing(home: bool) -> void:
+	# Cosmetic randomness is isolated from landmarks, obstacles and rewards.
+	var decor_rng := RandomNumberGenerator.new()
+	decor_rng.seed = map_seed + 170017
+	var dressing := Node3D.new()
+	dressing.name = "GroundDressing"
+	_room.add_child(dressing)
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var radius: float = 18.0 if home else 52.0
+	var count: int = 100 if home else 340
+	for i in range(count):
+		var angle: float = decor_rng.randf() * TAU
+		var distance: float = sqrt(decor_rng.randf()) * radius
+		var center := Vector3(cos(angle) * distance, 0.015, sin(angle) * distance)
+		if home and distance < 8.0: continue
+		if not home and _near_landmark(center, 4.5): continue
+		for blade in range(5):
+			var turn: float = decor_rng.randf() * TAU
+			var reach: float = decor_rng.randf_range(0.25, 0.65)
+			var tip: Vector3 = center + Vector3(cos(turn)*reach, decor_rng.randf_range(0.12,0.36), sin(turn)*reach)
+			var side := Vector3(-sin(turn),0,cos(turn))*0.045
+			var mid: Vector3 = center.lerp(tip,0.45) + Vector3.UP*0.07
+			for vertex in [center, mid+side, tip, center, tip, mid-side]: surface.add_vertex(vertex)
+	surface.generate_normals()
+	var grass := MeshInstance3D.new()
+	grass.name = "Meadow"
+	grass.mesh = surface.commit()
+	var colors: Array[Color] = [Color("78876a"),Color("968a70"),Color("72908b"),Color("8b927b"),Color("a59377"),Color("858778")]
+	grass.material_override = _material(colors[clampi(chapter-1,0,5)],0,true)
+	grass.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	dressing.add_child(grass)
+	# Low stones and moss form irregular patches, leaving movement unobstructed.
+	for i in range(18 if home else 48):
+		var angle: float = decor_rng.randf()*TAU
+		var distance: float = decor_rng.randf_range(9.0,radius)
+		var center := Vector3(cos(angle)*distance,0.015,sin(angle)*distance)
+		if not home and _near_landmark(center,5.0): continue
+		var stone := _cylinder(dressing,center,0.3,0.4,0.055,Color("a3a796"),5)
+		stone.scale = Vector3(decor_rng.randf_range(0.7,1.6),1,decor_rng.randf_range(0.5,1.1))
+		stone.rotation.y = angle
+	_batch_static(dressing)

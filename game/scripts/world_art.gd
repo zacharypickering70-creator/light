@@ -97,6 +97,7 @@ func _roof(parent: Node3D, pos: Vector3, half_width: float, half_depth: float, c
 		_sphere(roof, tip + Vector3(side * 0.25, 0.35, 0), 0.086, GOLD, 8)
 	_beam(roof, Vector3(-half_width, 0.91, 0), Vector3(half_width, 0.91, 0), 0.065, GOLD.darkened(0.24))
 
+	_batch_static(roof)
 
 func _roof_point(u: float, v: float, half_width: float, half_depth: float) -> Vector3:
 	var y: float = 0.83 * pow(1.0 - absf(v), 1.65) + 0.31 * pow(absf(v), 6.0) + 0.31 * pow(absf(u), 5.0)
@@ -306,3 +307,32 @@ func _polygon_mesh(parent: Node3D, vertices: PackedVector3Array, color: Color) -
 	instance.material_override = _material(color, 0.0, true)
 	parent.add_child(instance)
 	return instance
+
+
+func _batch_static(root_node: Node3D) -> void:
+	# Roofs and bamboo are immutable; merge by material within each object for culling.
+	var groups: Dictionary = {}
+	var shadows: Dictionary = {}
+	var originals: Array[MeshInstance3D] = []
+	for child in root_node.find_children("*", "MeshInstance3D", true, false):
+		var part: MeshInstance3D = child
+		var mat: Material = part.material_override
+		if not groups.has(mat):
+			var surface := SurfaceTool.new()
+			surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+			groups[mat] = surface
+			shadows[mat] = part.cast_shadow
+		var relative: Transform3D = root_node.global_transform.affine_inverse() * part.global_transform
+		for index in range(part.mesh.get_surface_count()):
+			groups[mat].append_from(part.mesh, index, relative)
+		originals.append(part)
+	for mat in groups:
+		var merged := MeshInstance3D.new()
+		merged.name = "StaticBatch"
+		merged.mesh = groups[mat].commit()
+		merged.material_override = mat
+		merged.cast_shadow = shadows[mat]
+		root_node.add_child(merged)
+	for part in originals: part.free()
+	root_node.set_meta("unbatched_parts", originals.size())
+	root_node.set_meta("batched_parts", groups.size())
