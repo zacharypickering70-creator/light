@@ -2742,8 +2742,13 @@ func _strike_impact(pos: Vector3, color: Color, finisher: bool) -> void:
 
 func _sync_weapon_impact() -> void:
 	if not weapon_tween or not weapon_tween.is_valid(): return
-	if hit_stop>0: weapon_tween.pause()
-	elif not weapon_tween.is_running(): weapon_tween.play()
+	if hit_stop>0:
+		if weapon_tween.is_running():
+			weapon_tween.pause()
+			weapon_tween.set_meta("impact_paused",true)
+	elif weapon_tween.get_meta("impact_paused",false):
+		weapon_tween.set_meta("impact_paused",false)
+		weapon_tween.play()
 
 func _attack_target(reach: float) -> Dictionary:
 	var best: Dictionary={}

@@ -84,6 +84,19 @@ func run():
 	g.passives.clear()
 	g._refresh_gear_visual()
 	check(g.player.get_node("LoadoutAura").find_children("MindCharm*","Sprite3D",true,false).is_empty(),"unequipping minds removes charms")
+	g._cancel_weapon_pose()
+	var finished_swing: Tween=g.create_tween()
+	g.weapon_tween=finished_swing
+	finished_swing.tween_interval(0.01)
+	await finished_swing.finished
+	g.hit_stop=0.04
+	g._sync_weapon_impact()
+	g.hit_stop=0
+	g._sync_weapon_impact()
+	check(not finished_swing.is_running(),"completed swing stays completed after contact pause")
+	await process_frame
+	await process_frame
+	check(not finished_swing.is_valid(),"completed swing is released instead of paused forever")
 	if failures.is_empty(): print("COMBAT_FLOW_PASS")
 	else: print("COMBAT_FLOW_FAIL ",failures)
 	quit(0 if failures.is_empty() else 1)
