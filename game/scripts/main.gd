@@ -61,6 +61,9 @@ var dash_left: float = 0.0
 var immunity: float = 0.0
 var hit_stop: float = 0.0
 var attack_buffer: float = 0.0
+var tactic_spawn_serial: int = 0
+var aim_target_id: int = 0
+var aim_memory: float = 0.0
 var attack_pose_duration: float = 0.20
 var cast_pose: float = 0.0
 var queued_skill: int = -1
@@ -230,7 +233,9 @@ func _tick_game(dt: float) -> void:
 	rooted_left=maxf(0,rooted_left-dt)
 	root_ward=maxf(0,root_ward-dt)
 	_update_root_mark()
+	aim_memory=maxf(0,aim_memory-dt)
 	hit_stop=maxf(0,hit_stop-dt)
+	_sync_weapon_impact()
 	attack_buffer=maxf(0,attack_buffer-dt)
 	if hit_stop<=0: attack_pose=maxf(0,attack_pose-dt)
 	if not feedback_pending.is_empty():
@@ -346,21 +351,20 @@ func _attack() -> void:
 	var data: Dictionary = _weapon()
 	attack_pose_duration=clampf(float(data["interval"])*0.6,0.14,0.32)
 	attack_pose=attack_pose_duration
-	var target: Dictionary = _nearest_enemy(float(data["reach"])+2.0)
-	if not target.is_empty(): facing = (target["node"].position-player.position).normalized()
 	attack_cd = float(data["interval"])*float(Techniques.ARTS[normal_art]["speed"])*pow(0.88,mini(_boon("quick"),7))
 	if haste_left>0 or avatar_left>0: attack_cd/=1.25
 	combo = combo%3+1
 	combo_time = 1.3
 	var reach: float = float(data["reach"])*(1+_boon("reach")*0.20)*(1.35 if normal_art=="thrust" else 1.0)
+	var target: Dictionary = _attack_target(reach)
+	if not target.is_empty():
+		facing = (target["node"].position-player.position).normalized()
+		aim_target_id=target["node"].get_instance_id()
+		aim_memory=0.4
 	var origin: Vector3 = player.position
 	var weapon_id: String = {"cleave":"ferry_blade","flurry":"long_sword","thrust":"long_spear","sweep":"iron_staff"}[normal_art]
 	var color := Color(data["color"])
-	if weapon_id not in ["long_spear","long_sword"]: _arc(origin+Vector3.UP*0.7,facing,reach,color)
-	if weapon_id=="long_sword": _bolt(origin+Vector3.UP*0.8,origin+facing*reach+Vector3.UP*0.8,color)
-	if weapon_id=="iron_staff": _ring(origin,reach,color,0.24)
-	if weapon_id=="long_spear" or (weapon_id=="long_sword" and combo==3):
-		_bolt(origin+Vector3.UP*0.8,origin+facing*(reach if weapon_id=="long_spear" else 6.0)+Vector3.UP*0.8,color)
+	preload("res://scripts/combat_effects.gd").swing(self,origin,facing,reach,normal_art,color,combo)
 	var weapon: Node3D = player.find_child("Weapon",true,false)
 	if weapon:
 		if weapon_tween and weapon_tween.is_valid(): weapon_tween.kill()
@@ -415,8 +419,9 @@ func _attack() -> void:
 		ultimate_charge=minf(100,ultimate_charge+3*(1+0.2*_boon("resolve")))
 		tutorial_flags["attack"]=true
 		hit_stop=(0.028 if data["interval"]<0.3 else 0.045) if combo!=3 else 0.065
+		_sync_weapon_impact()
 		shake=maxf(shake,0.10 if combo!=3 else 0.22)
-		_sfx("impactPunch_heavy_000.ogg" if progress["equipped"]["blade"]=="heavy_cleaver" or combo==3 else "impactMetal_light_000.ogg",-9)
+		_sfx("impactPunch_heavy_000.ogg" if progress["equipped"]["blade"]=="heavy_cleaver" or combo==3 else "impactMetal_light_000.ogg",-9,{"long_sword":1.18,"long_spear":0.98,"iron_staff":0.88,"heavy_cleaver":0.74}.get(progress["equipped"]["blade"],1.0))
 		spark_hits+=1
 		if ("spark" in passives or progress["equipped"]["lamp"]=="storm_lamp") and spark_hits%3==0:
 			_chain_lightning(3,15.0)
@@ -566,6 +571,8 @@ func _spawn_enemy(kind: String, pos: Vector3) -> Dictionary:
 		health=99999
 		speed=0
 	var enemy: Dictionary = {"kind":kind,"node":node,"hp":health,"max_hp":health,"speed":speed,"radius":radius,"mode":"chase","timer":rng.randf_range(0.3, 0.9),"target":pos,"tell":null,"count":0,"dash_hit":false,"home":pos,"power":1.0,"burn":0.0,"burn_tick":0.0,"slow":0.0,"poison":0.0,"poison_tick":0.0,"exposed":0.0,"stun":0.0,"weak":0.0}
+	preload("res://scripts/enemy_tactics.gd").initialize(enemy,tactic_spawn_serial,map_seed)
+	tactic_spawn_serial+=1
 	enemies.append(enemy)
 	_ring(pos, 0.8, Color("8ba7a4"), 0.5)
 	return enemy
@@ -581,7 +588,9 @@ func _tick_enemy(enemy: Dictionary, dt: float) -> void:
 			_burst(enemy["node"].position+Vector3.UP,Color("a6ca6d"),3,0.5)
 			_damage_enemy(enemy,8.0+3*_boon("venom"),player.position)
 			if enemy["hp"]<=0: return
-	if enemy["stun"]>0: return
+	if enemy["stun"]>0:
+		preload("res://scripts/enemy_tactics.gd").interrupt(enemy)
+		return
 	enemy["slow"]=maxf(0,enemy.get("slow",0.0)-dt)
 	if enemy.get("burn",0.0)>0:
 		enemy["burn"] -= dt
@@ -600,6 +609,9 @@ func _tick_enemy(enemy: Dictionary, dt: float) -> void:
 	preload("res://scripts/model_library.gd").animate_enemy(node,start_time*9.0+float(node.get_instance_id()%37),enemy["mode"],enemy["timer"])
 	if (not journey_started or distance > 28) and not enemy.get("wave",false) and enemy["mode"] != "tell":
 		node.position = node.position.move_toward(enemy["home"], dt * 2.5)
+		return
+	if preload("res://scripts/enemy_tactics.gd").handles(enemy):
+		preload("res://scripts/enemy_tactics.gd").tick(self,enemy,dt)
 		return
 	if distance > 0.01:
 		node.rotation.y = lerp_angle(node.rotation.y, atan2(-diff.x, -diff.z), minf(1, dt * 7))
@@ -832,25 +844,14 @@ func _hit_reaction(enemy: Dictionary) -> void:
 		recoil.tween_property(body,"rotation:x",0.0,0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 func _animate_player(dt: float, direction: Vector3) -> void:
-	var body: Node3D=player.get_node_or_null("Body")
-	if not body: return
 	var moving: float=direction.length()
 	pose_time+=dt*(12.0 if moving>0.1 else 2.0)
-	var strike: float=sin((0.2+0.8*(1.0-clampf(attack_pose/attack_pose_duration,0,1)))*PI) if attack_pose>0 else 0.0
-	var weight: float=1.35 if progress["equipped"]["blade"]=="heavy_cleaver" else 1.0
-	var casting: float=sin(clampf(cast_pose/0.24,0,1)*PI)
-	var cloak: Node3D=body.get_node_or_null("Cloak")
-	if cloak: cloak.rotation.x=sin(pose_time*0.55)*0.025+moving*0.08
-	body.rotation.x=lerpf(body.rotation.x,(-0.22 if dash_left>0 else -0.07*moving)-strike*0.12*weight,minf(1,dt*24))
-	body.rotation.y=strike*(0.32 if combo%2==0 else -0.32)*weight
-	body.rotation.z=sin(pose_time)*0.035*moving
-	for side in ["Left","Right"]:
-		var leg: Node3D=body.get_node_or_null(side+"Leg")
-		if leg:
-			leg.rotation.x=sin(pose_time+(PI if side=="Right" else 0))*0.58*moving
-		var arm: Node3D=body.get_node_or_null(side+"Arm")
-		if arm:
-			arm.rotation.x=sin(pose_time+(PI if side=="Left" else 0))*0.22*moving-strike*0.65*weight-casting*(1.1 if side=="Left" else 0.35)
+	preload("res://scripts/model_library.gd").animate_player(player,dt,{
+		"phase":pose_time,"moving":moving,"weapon":progress["equipped"]["blade"],
+		"art":normal_art,"combo":combo,"attack_left":attack_pose,
+		"attack_duration":attack_pose_duration,"cast_left":cast_pose,
+		"dashing":dash_left>0,"impact_paused":hit_stop>0
+	})
 
 func _kill_enemy(enemy: Dictionary) -> void:
 	ChapterFour.clear_marks(enemy)
@@ -953,6 +954,8 @@ func _reset_journey() -> void:
 	attack_buffer=0
 	attack_pose=0
 	cast_pose=0
+	aim_target_id=0
+	aim_memory=0
 	_clear_combat_buffer()
 	pose_time=0
 	_clear_dynamic()
@@ -1074,6 +1077,11 @@ func _start_expedition() -> void:
 	_play_chapter_book(false)
 
 func _clear_dynamic() -> void:
+	if weapon_tween and weapon_tween.is_valid(): weapon_tween.kill()
+	weapon_tween=null
+	hit_stop=0
+	attack_pose=0
+	tactic_spawn_serial=0
 	_clear_combat_buffer()
 	cast_pose=0
 	found_scroll = {}
@@ -1967,6 +1975,11 @@ func _autoplay_test() -> void:
 				var toward: Vector3=diff.normalized()
 				direction=toward if diff.length()>2.4 else Vector3(-toward.z,0,toward.x)
 			for enemy in enemies:
+				if enemy["mode"] in ["charge_tell","charge"]:
+					if preload("res://scripts/enemy_tactics.gd").point_in_capsule(player.position,enemy["charge_from"],enemy["charge_to"],1.6):
+						var side: Vector3=enemy["charge_direction"].cross(Vector3.UP)
+						direction=side*(1.0 if (player.position-enemy["charge_from"]).dot(side)>=0 else -1.0)
+						if enemy["timer"]<0.55: _dash(direction)
 				if enemy["mode"]=="tell" and enemy["attack"] not in ["shot","volley"]:
 					var away: Vector3=player.position-enemy["target"]
 					if away.length()<float(enemy["attack_radius"])+0.8:
@@ -2222,20 +2235,28 @@ func _chain_lightning(count: int,damage: float) -> void:
 		if state!="playing": return
 		previous=end
 
-func _sfx(file: String,volume: float) -> void:
+func _sfx(file: String,volume: float,pitch: float=1.0) -> void:
 	if muted or test_mode or sfx_players.is_empty(): return
 	var voice: AudioStreamPlayer=sfx_players[sfx_index%sfx_players.size()]
 	sfx_index+=1
 	voice.stream=load("res://assets/kenney/"+file)
 	voice.volume_db=volume
-	voice.pitch_scale=cosmetic_rng.randf_range(0.93,1.07)
+	voice.pitch_scale=pitch*cosmetic_rng.randf_range(0.96,1.04)
 	voice.play()
 
 func _refresh_gear_visual() -> void:
 	if not is_instance_valid(player): return
-	preload("res://scripts/model_library.gd").equip(player,progress["equipped"]["blade"])
+	var equipped: Dictionary=progress["equipped"]
+	if player.get_meta("visual_weapon","")!=equipped["blade"]:
+		preload("res://scripts/model_library.gd").equip(player,equipped["blade"])
+		player.set_meta("visual_weapon",equipped["blade"])
+	var aura_key: String=equipped["robe"]+":"+equipped["lamp"]+":"+",".join(passives)
 	var old: Node=player.get_node_or_null("LoadoutAura")
+	if old and player.get_meta("visual_aura","")==aura_key:
+		_update_aura_state(old)
+		return
 	if old: old.free()
+	player.set_meta("visual_aura",aura_key)
 	var aura:=Node3D.new()
 	aura.name="LoadoutAura"
 	player.add_child(aura)
@@ -2267,6 +2288,7 @@ func _refresh_gear_visual() -> void:
 		world._sphere(orb,Vector3(cos(a)*0.32,0,sin(a)*0.32),0.04,lamp_color,6)
 	var color:=Color(Techniques.SKILLS[active_skill]["color"])
 	var seal:=Sprite3D.new()
+	seal.name="SkillSeal"
 	seal.texture=load("res://assets/kenney/magic_01.png")
 	seal.rotation.x=-PI/2
 	seal.pixel_size=0.0045
@@ -2285,6 +2307,7 @@ func _refresh_gear_visual() -> void:
 	var mind_icons: Dictionary={"orbit":"ultimate","spark":"thunder","leech":"heal","momentum":"dash","ironwall":"barrier","swift":"haste","reservoir":"vortex","fury":"attack","merciful":"frost","focus":"stun"}
 	for i in range(passives.size()):
 		var charm:=Sprite3D.new()
+		charm.name="MindCharm"+str(i)
 		charm.texture=load("res://assets/ui/"+mind_icons[passives[i]]+".svg")
 		charm.billboard=BaseMaterial3D.BILLBOARD_ENABLED
 		charm.pixel_size=0.005
@@ -2340,9 +2363,9 @@ func _tick_buffs(dt: float) -> void:
 		if orb:
 			orb.position=orb.position.lerp(Vector3(-0.9,1.5+sin(start_time*2.5)*0.15,0.15),minf(1,dt*8))
 			orb.rotation.y+=dt
+		_update_aura_state(aura)
 		var seal: Node3D=aura.get_node_or_null("StatusSeal")
 		if seal:
-			seal.visible=guard_left>0 or haste_left>0 or avatar_left>0 or shield_hp>0
 			seal.scale=Vector3.ONE*(1.0+sin(start_time*4)*0.08)
 
 func _ultimate() -> void:
@@ -2350,6 +2373,10 @@ func _ultimate() -> void:
 	if ultimate_charge<100:
 		ui.toast("绝技需满战意 · 命中和击败敌人可积攒")
 		return
+	_cancel_weapon_pose()
+	cast_pose=0.34
+	queued_skill=-1
+	skill_buffer=0
 	ultimate_charge=0
 	ultimate_cd=2.0
 	var id: String=ultimate_id
@@ -2665,9 +2692,9 @@ func _clear_combat_buffer() -> void:
 func _request_skill(slot: int) -> void:
 	if state!="playing" or slot<0 or slot>=3: return
 	if skill_cds[slot]>0.16: return
-	if dash_left>0 or skill_cds[slot]>0:
+	if dash_left>0 or skill_cds[slot]>0 or cast_pose>0.10:
 		queued_skill=slot
-		skill_buffer=0.22
+		skill_buffer=maxf(0.22,minf(0.32,cast_pose-0.10+0.04))
 	else:
 		queued_skill=-1
 		skill_buffer=0
@@ -2688,7 +2715,7 @@ func _tick_combat_buffer(dt: float) -> void:
 	if dash_buffer>0 and dash_cd<=0:
 		dash_buffer=0
 		_dash(buffered_dash_direction)
-	if skill_buffer>0 and queued_skill>=0 and dash_left<=0 and skill_cds[queued_skill]<=0:
+	if skill_buffer>0 and queued_skill>=0 and dash_left<=0 and cast_pose<=0.10 and skill_cds[queued_skill]<=0:
 		var slot: int=queued_skill
 		queued_skill=-1
 		skill_buffer=0
@@ -2711,3 +2738,34 @@ func _strike_impact(pos: Vector3, color: Color, finisher: bool) -> void:
 	_bolt(pos-side*size-Vector3.UP*size,pos+side*size+Vector3.UP*size,color)
 	if finisher:
 		_bolt(pos+side*size-Vector3.UP*size,pos-side*size+Vector3.UP*size,Color("fff0c9"))
+
+
+func _sync_weapon_impact() -> void:
+	if not weapon_tween or not weapon_tween.is_valid(): return
+	if hit_stop>0: weapon_tween.pause()
+	elif not weapon_tween.is_running(): weapon_tween.play()
+
+func _attack_target(reach: float) -> Dictionary:
+	var best: Dictionary={}
+	var best_score: float=INF
+	for enemy in enemies:
+		if enemy["hp"]<=0 or not is_instance_valid(enemy["node"]): continue
+		var offset: Vector3=enemy["node"].position-player.position
+		offset.y=0
+		var distance: float=offset.length()
+		if distance>reach+float(enemy["radius"]): continue
+		var alignment: float=offset.normalized().dot(facing)
+		var score: float=distance+(1.0-alignment)*1.2
+		if aim_memory>0 and enemy["node"].get_instance_id()==aim_target_id: score-=0.35
+		if score<best_score:
+			best_score=score
+			best=enemy
+	return best
+
+func _update_aura_state(aura: Node3D) -> void:
+	var seal: Sprite3D=aura.get_node_or_null("SkillSeal")
+	if seal: seal.modulate=Color(Color(Techniques.SKILLS[active_skill]["color"]),0.40)
+	var status: Sprite3D=aura.get_node_or_null("StatusSeal")
+	if status:
+		status.modulate=Color("e6ce8f") if guard_left>0 or shield_hp>0 else (Color("a4e1be") if haste_left>0 else Color("eb9765"))
+		status.visible=guard_left>0 or haste_left>0 or avatar_left>0 or shield_hp>0

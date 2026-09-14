@@ -2,6 +2,7 @@ extends "res://scripts/world_art.gd"
 
 const INK_SHADER = preload("res://assets/ink.gdshader")
 const GROUND_SHADER = preload("res://assets/paper_ground.gdshader")
+const CHAPTER_ART = preload("res://scripts/chapter_art.gd")
 const LANDMARK_NAMES = ["落灯坪", "风竹林", "听雨亭", "无声渡", "枯荷汀", "归墨碑", "镇渡台"]
 var chapter: int=1
 var final_scene: Node3D
@@ -130,14 +131,14 @@ func build_map(value: int, preview: bool = false) -> void:
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
 	env.background_color = Color("e7e2d4")
-	if chapter==3 and not preview: env.background_color=Color("cbd8d5")
+	if not preview: env.background_color=CHAPTER_ART.FOG[clampi(chapter-1,0,5)]
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color("f5f0e3")
 	env.ambient_light_energy = 0.85
 	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
 	env.fog_enabled = true
 	env.fog_light_color = Color("e7e2d4")
-	if chapter==3 and not preview: env.fog_light_color=Color("b5cccb")
+	if not preview: env.fog_light_color=CHAPTER_ART.FOG[clampi(chapter-1,0,5)]
 	env.fog_light_energy = 1.0
 	env.fog_density = 0.0015
 	environment.environment = env
@@ -155,6 +156,9 @@ func build_map(value: int, preview: bool = false) -> void:
 	ground.mesh = plane
 	var paper := ShaderMaterial.new()
 	paper.shader = GROUND_SHADER
+	if not preview and chapter>=2:
+		paper.shader=preload("res://assets/chapter_ground.gdshader")
+		paper.set_shader_parameter("paper_tint",CHAPTER_ART.PAPER[clampi(chapter-1,0,5)])
 	ground.material_override = paper
 	ground.position.y = -0.055
 	root_art.add_child(ground)
@@ -221,6 +225,7 @@ func build_map(value: int, preview: bool = false) -> void:
 			_box(_room,Vector3(-4,3.5,-5),Vector3(2.5,0.22,1.25),Color("292d2b"))
 		_region_details(id)
 		if chapter==1: preload("res://scripts/ferry_art.gd").dress(self,id)
+		else: CHAPTER_ART.dress(self,id)
 		for side in [-1.0,1.0]:
 			var tree_pos := Vector3(side*9,0,-7)
 			if chapter==1 and ((id==3 and side>0) or (id==4 and side<0)):
@@ -338,7 +343,7 @@ func _material(color: Color, emission: float = 0.0, double_sided: bool = false) 
 	var gray: float = color.r*0.28+color.g*0.55+color.b*0.17
 	var ink: Color = Color(gray*0.88,gray*0.88,gray*0.82) if not red else Color("994334")
 	if color.g>color.r*1.1 and color.g>color.b*1.08: ink=Color(gray*0.74,gray*0.98,gray*0.72)
-	if chapter==3 and color.b>color.r*1.12: ink=Color(gray*0.65,gray*0.94,gray*1.1)
+	if chapter==3 and color.b>color.r*1.12: ink=Color(gray*0.88,gray*0.92,gray*0.91)
 	if emission>0:
 		ink=Color("c08050") if red or color.r>0.6 else Color("9c9b82")
 	var key: String = ink.to_html()+str(double_sided)

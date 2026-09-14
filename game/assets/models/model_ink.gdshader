@@ -11,6 +11,7 @@ void vertex() {
 }
 void fragment() {
  float weave = 0.97 + 0.03 * sin(local_point.y * 37.0 + local_point.x * 21.0);
- ALBEDO = COLOR.rgb * cloth_tint.rgb * facet_light * weave;
+ float contour = 0.82 + 0.18 * smoothstep(0.0, 0.40, abs(dot(normalize(NORMAL), normalize(VIEW))));
+ ALBEDO = COLOR.rgb * cloth_tint.rgb * facet_light * weave * contour;
  ROUGHNESS = 1.0;
 }

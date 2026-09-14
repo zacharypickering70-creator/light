@@ -1,0 +1,146 @@
+{
+  "apk": {
+    "version": "0.18.0",
+    "version_code": 21,
+    "package": "com.jindengxing.prototype",
+    "bytes": 76420115,
+    "sha256": "a704e7ec34eb37b995a5d0d39ec5b102f9f5524e514869351be0d39dca1582cb",
+    "signature_verified": true,
+    "same_certificate_as_0_17_0": true,
+    "zip_alignment_16kb": true,
+    "zip_integrity": true,
+    "abis": [
+      "armeabi-v7a",
+      "arm64-v8a"
+    ],
+    "android_manifest": [
+      "package: name='com.jindengxing.prototype' versionCode='21' versionName='0.18.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+      "sdkVersion:'24'",
+      "targetSdkVersion:'36'",
+      "native-code: 'arm64-v8a' 'armeabi-v7a'"
+    ],
+    "device_tested": false,
+    "arm64_elf_load_alignment_16kb": true
+  },
+  "regression": {
+    "active_suites": 16,
+    "passed": 16,
+    "tests": [
+      {
+        "name": "combat_flow_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "COMBAT_FLOW_PASS"
+        ]
+      },
+      {
+        "name": "combat_feel_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "COMBAT18_PASS"
+        ]
+      },
+      {
+        "name": "enemy_tactics_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "ENEMY_TACTICS_PASS"
+        ]
+      },
+      {
+        "name": "actor_motion_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "ACTOR_MOTION_PASS: five weapons, four independent arts, impact hold, mobile footwork, cast, dash, nine enemy tells, recoil and shared mesh/material budgets"
+        ]
+      },
+      {
+        "name": "model_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "MODELS12_PASS: 22 assets, mesh budgets, clips, six bosses, sockets, weapons, robes, motion, 65 shared models, recoil, death"
+        ]
+      },
+      {
+        "name": "scene_art_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "SCENE17_PASS"
+        ]
+      },
+      {
+        "name": "chapter_art_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "CHAPTER_ART_PASS"
+        ]
+      },
+      {
+        "name": "ui_layout_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "UI_LAYOUT_PASS"
+        ]
+      },
+      {
+        "name": "experience_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "EXPERIENCE_PASS"
+        ]
+      },
+      {
+        "name": "exploration_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "EXPLORATION_PASS"
+        ]
+      },
+      {
+        "name": "ranger_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "RANGER_PASS"
+        ]
+      },
+      {
+        "name": "chapter_three_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "CHAPTER09_PASS: route, continuity, two choices, fragments, mirrored skills, evasion, death dialogue, book, cashout"
+        ]
+      },
+      {
+        "name": "chapter_four_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "CHAPTER10_PASS: continuity, anchors, fragments, reveal, real/false damage, spear, annulus, marker cleanup, dialogue, book, home"
+        ]
+      },
+      {
+        "name": "chapter_five_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "CHAPTER11_PASS: route, continuity, voices, fragments, three phases, evasion, edges, cleanup, dialogue, three endings, catchup, settlement"
+        ]
+      },
+      {
+        "name": "chapter_six_checks",
+        "exit_code": 0,
+        "pass_markers": [
+          "CHAPTER13_PASS: route, three branches, names, fragments, stamp/root/dash, chain, pair, edge separation, cleanup, dialogue, book, cashout"
+        ]
+      },
+      {
+        "name": "revision-test",
+        "exit_code": 0,
+        "pass_markers": [
+          "CAMPAIGN07_PASS: 36 loadouts, floating orb, increasing XP and waves, locks, preserved transitions, continue/cashout choice, death animation and half penalty"
+        ]
+      }
+    ]
+  },
+  "legacy_test_note": "mobile_checks is an obsolete, unreferenced pre-continuous-campaign helper; current mobile layout and multi-touch checks are in ui_layout_checks.",
+  "environment_warning": "Headless Godot prints the root certificate store warning in the restricted development environment. No game script errors in the current suites.",
+  "device_tested": false
+}

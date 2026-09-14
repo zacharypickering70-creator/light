@@ -1,0 +1,580 @@
+[
+  {
+    "build": "flame",
+    "casts": {
+      "fire": 23,
+      "thunder": 17,
+      "vortex": 16
+    },
+    "early_nearby": 2.50833333333333,
+    "empty_fraction": 0.353909465020576,
+    "final": {
+      "boons": {
+        "ash": 1,
+        "echo": 1,
+        "flame": 1,
+        "health": 1,
+        "orbit": 1,
+        "thorns": 1,
+        "venom": 1,
+        "ward": 1
+      },
+      "boss_spawned": false,
+      "damage_sources": {
+        "1:boss_projectile": {
+          "absorbed": 0.0,
+          "health_damage": 27.52,
+          "hits": 2,
+          "max_hit": 13.76
+        },
+        "1:ranger_projectile": {
+          "absorbed": 0.0,
+          "health_damage": 80.5251565434955,
+          "hits": 5,
+          "max_hit": 17.2895999333623
+        },
+        "2:ranger_projectile": {
+          "absorbed": 0.0,
+          "health_damage": 23.9548434565045,
+          "hits": 2,
+          "max_hit": 25.5039993701416
+        }
+      },
+      "hp": 0.0,
+      "kills": 357,
+      "last_damage_source": "2:ranger_projectile",
+      "level": 9,
+      "ranks": {
+        "fire": 5,
+        "thunder": 1,
+        "vortex": 3
+      },
+      "seconds": 121.7,
+      "stage": 2,
+      "state": "dying",
+      "wave": 22
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.5,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.6,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.2,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.5,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 47.7,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 68.4,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 94.6,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 120.1,
+        "wave": 22
+      }
+    ],
+    "minds": [
+      "orbit",
+      "reservoir"
+    ],
+    "nearby_mean": 3.32921810699588,
+    "peak": 32,
+    "seed": 4523,
+    "stages": [
+      {
+        "boons": {
+          "ash": 1,
+          "echo": 1,
+          "flame": 1,
+          "health": 1,
+          "orbit": 1,
+          "venom": 1,
+          "ward": 1
+        },
+        "boss_spawned": true,
+        "damage_sources": {
+          "1:boss_projectile": {
+            "absorbed": 0.0,
+            "health_damage": 27.52,
+            "hits": 2,
+            "max_hit": 13.76
+          },
+          "1:ranger_projectile": {
+            "absorbed": 0.0,
+            "health_damage": 80.5251565434955,
+            "hits": 5,
+            "max_hit": 17.2895999333623
+          }
+        },
+        "hp": 24.0,
+        "kills": 258,
+        "last_damage_source": "1:boss_projectile",
+        "level": 8,
+        "ranks": {
+          "fire": 5,
+          "thunder": 1,
+          "vortex": 2
+        },
+        "seconds": 95.9,
+        "stage": 1,
+        "state": "transition",
+        "wave": 17
+      }
+    ],
+    "ultimates": 21
+  },
+  {
+    "build": "control",
+    "casts": {
+      "darts": 38,
+      "frost": 31,
+      "stun": 22
+    },
+    "early_nearby": 2.22314049586777,
+    "empty_fraction": 0.25,
+    "final": {
+      "boons": {
+        "crit": 1,
+        "dash": 1,
+        "frostbite": 1,
+        "health": 1,
+        "lotus_step": 1,
+        "orbit": 1,
+        "rage": 1,
+        "refresh": 1,
+        "soul": 1
+      },
+      "boss_spawned": false,
+      "damage_sources": {
+        "1:boss_projectile": {
+          "absorbed": 0.0,
+          "health_damage": 16.0,
+          "hits": 1,
+          "max_hit": 16.0
+        },
+        "1:ranger_projectile": {
+          "absorbed": 0.0,
+          "health_damage": 18.7674727242418,
+          "hits": 1,
+          "max_hit": 18.7674727242418
+        },
+        "2:ranger_projectile": {
+          "absorbed": 0.0,
+          "health_damage": 211.232527275758,
+          "hits": 7,
+          "max_hit": 39.0510428480365
+        }
+      },
+      "hp": 0.0,
+      "kills": 510,
+      "last_damage_source": "2:ranger_projectile",
+      "level": 10,
+      "ranks": {
+        "darts": 1,
+        "frost": 5,
+        "stun": 4
+      },
+      "seconds": 161.2,
+      "stage": 2,
+      "state": "dying",
+      "wave": 30
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.6,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.0,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 13.8,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 25.9,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 42.4,
+        "wave": 8
+      },
+      {
+        "level": 7,
+        "seconds": 59.9,
+        "wave": 11
+      },
+      {
+        "level": 8,
+        "seconds": 85.3,
+        "wave": 16
+      },
+      {
+        "level": 9,
+        "seconds": 113.5,
+        "wave": 21
+      },
+      {
+        "level": 10,
+        "seconds": 136.4,
+        "wave": 25
+      }
+    ],
+    "minds": [
+      "focus",
+      "swift"
+    ],
+    "nearby_mean": 3.85185185185185,
+    "peak": 32,
+    "seed": 4523,
+    "stages": [
+      {
+        "boons": {
+          "crit": 1,
+          "dash": 1,
+          "health": 1,
+          "rage": 1,
+          "refresh": 1,
+          "soul": 1
+        },
+        "boss_spawned": true,
+        "damage_sources": {
+          "1:boss_projectile": {
+            "absorbed": 0.0,
+            "health_damage": 16.0,
+            "hits": 1,
+            "max_hit": 16.0
+          },
+          "1:ranger_projectile": {
+            "absorbed": 0.0,
+            "health_damage": 18.7674727242418,
+            "hits": 1,
+            "max_hit": 18.7674727242418
+          }
+        },
+        "hp": 97.2,
+        "kills": 216,
+        "last_damage_source": "1:ranger_projectile",
+        "level": 7,
+        "ranks": {
+          "darts": 1,
+          "frost": 5,
+          "stun": 1
+        },
+        "seconds": 83.0,
+        "stage": 1,
+        "state": "transition",
+        "wave": 15
+      }
+    ],
+    "ultimates": 30
+  },
+  {
+    "build": "sustain",
+    "casts": {
+      "barrier": 31,
+      "heal": 10,
+      "weak": 48
+    },
+    "early_nearby": 2.80833333333333,
+    "empty_fraction": 0.0747384155455904,
+    "final": {
+      "boons": {
+        "crit": 5,
+        "edge": 1,
+        "energy": 1,
+        "expose": 3,
+        "fervor": 1,
+        "health": 2,
+        "thrift": 1
+      },
+      "boss_spawned": true,
+      "damage_sources": {
+        "1:boss_projectile": {
+          "absorbed": 11.152,
+          "health_damage": 0.0,
+          "hits": 1,
+          "max_hit": 0.0
+        },
+        "1:ranger_projectile": {
+          "absorbed": 171.095748695961,
+          "health_damage": 30.1153456896142,
+          "hits": 18,
+          "max_hit": 14.3172406588489
+        },
+        "2:brute_charge": {
+          "absorbed": 17.3638164117719,
+          "health_damage": 51.8231534968676,
+          "hits": 1,
+          "max_hit": 51.8231534968676
+        },
+        "2:brute_melee": {
+          "absorbed": 105.010289668843,
+          "health_damage": 95.2575970958566,
+          "hits": 3,
+          "max_hit": 53.8785516697568
+        },
+        "2:grunt_melee": {
+          "absorbed": 1024.10708843665,
+          "health_damage": 1009.49982434055,
+          "hits": 50,
+          "max_hit": 65.7379333517548
+        },
+        "2:ranger_projectile": {
+          "absorbed": 1521.23782074775,
+          "health_damage": 1539.74337235943,
+          "hits": 104,
+          "max_hit": 59.2918494723059
+        }
+      },
+      "hp": 0.0,
+      "kills": 1386,
+      "last_damage_source": "2:ranger_projectile",
+      "level": 15,
+      "ranks": {
+        "barrier": 5,
+        "heal": 5,
+        "weak": 5
+      },
+      "seconds": 334.7,
+      "stage": 2,
+      "state": "dying",
+      "wave": 67
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.4,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 7.6,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 14.8,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 27.8,
+        "wave": 5
+      },
+      {
+        "level": 6,
+        "seconds": 48.2,
+        "wave": 9
+      },
+      {
+        "level": 7,
+        "seconds": 70.0,
+        "wave": 12
+      },
+      {
+        "level": 8,
+        "seconds": 95.6,
+        "wave": 17
+      },
+      {
+        "level": 9,
+        "seconds": 121.1,
+        "wave": 22
+      },
+      {
+        "level": 10,
+        "seconds": 152.6,
+        "wave": 28
+      },
+      {
+        "level": 11,
+        "seconds": 174.2,
+        "wave": 32
+      },
+      {
+        "level": 12,
+        "seconds": 205.1,
+        "wave": 38
+      },
+      {
+        "level": 13,
+        "seconds": 232.9,
+        "wave": 44
+      },
+      {
+        "level": 14,
+        "seconds": 264.0,
+        "wave": 51
+      },
+      {
+        "level": 15,
+        "seconds": 302.4,
+        "wave": 59
+      }
+    ],
+    "minds": [
+      "leech",
+      "ironwall"
+    ],
+    "nearby_mean": 18.1031390134529,
+    "peak": 65,
+    "seed": 4523,
+    "stages": [
+      {
+        "boons": {
+          "crit": 3,
+          "edge": 1,
+          "expose": 1,
+          "fervor": 1,
+          "health": 1
+        },
+        "boss_spawned": true,
+        "damage_sources": {
+          "1:boss_projectile": {
+            "absorbed": 11.152,
+            "health_damage": 0.0,
+            "hits": 1,
+            "max_hit": 0.0
+          },
+          "1:ranger_projectile": {
+            "absorbed": 171.095748695961,
+            "health_damage": 30.1153456896142,
+            "hits": 18,
+            "max_hit": 14.3172406588489
+          }
+        },
+        "hp": 148.0,
+        "kills": 346,
+        "last_damage_source": "1:ranger_projectile",
+        "level": 8,
+        "ranks": {
+          "barrier": 1,
+          "heal": 2,
+          "weak": 5
+        },
+        "seconds": 118.4,
+        "stage": 1,
+        "state": "transition",
+        "wave": 21
+      }
+    ],
+    "ultimates": 20
+  },
+  {
+    "build": "burst",
+    "casts": {
+      "fire": 14,
+      "haste": 5,
+      "quake": 8
+    },
+    "early_nearby": 4.55371900826446,
+    "empty_fraction": 0.179856115107914,
+    "final": {
+      "boons": {
+        "dash": 1,
+        "frostbite": 1,
+        "health": 1,
+        "orbit": 1,
+        "rage": 1
+      },
+      "boss_spawned": false,
+      "damage_sources": {
+        "1:grunt_melee": {
+          "absorbed": 0.0,
+          "health_damage": 14.2522356677625,
+          "hits": 1,
+          "max_hit": 14.2522356677625
+        },
+        "1:ranger_projectile": {
+          "absorbed": 0.0,
+          "health_damage": 117.747764332237,
+          "hits": 8,
+          "max_hit": 17.5196366069143
+        }
+      },
+      "hp": 0.0,
+      "kills": 175,
+      "last_damage_source": "1:ranger_projectile",
+      "level": 6,
+      "ranks": {
+        "fire": 4,
+        "haste": 1,
+        "quake": 1
+      },
+      "seconds": 69.2,
+      "stage": 1,
+      "state": "dying",
+      "wave": 12
+    },
+    "growth": 1.035,
+    "levels": [
+      {
+        "level": 2,
+        "seconds": 2.9,
+        "wave": 1
+      },
+      {
+        "level": 3,
+        "seconds": 8.1,
+        "wave": 2
+      },
+      {
+        "level": 4,
+        "seconds": 15.9,
+        "wave": 3
+      },
+      {
+        "level": 5,
+        "seconds": 32.5,
+        "wave": 6
+      },
+      {
+        "level": 6,
+        "seconds": 47.8,
+        "wave": 9
+      }
+    ],
+    "minds": [
+      "spark",
+      "fury"
+    ],
+    "nearby_mean": 4.73381294964029,
+    "peak": 21,
+    "seed": 4523,
+    "stages": [],
+    "ultimates": 9
+  }
+]

@@ -18,6 +18,7 @@ func run() -> void:
 	root.add_child(g)
 	g.set_process(false)
 	g.test_mode=true
+	g.rng.seed=5
 	g.music_player.stop()
 	g._start_run()
 	g._on_action("begin")
@@ -42,8 +43,13 @@ func run() -> void:
 			g._interact()
 			check(g.ui._modal_description.text==g.ChapterFive.VOICES[pickup["id"]][1],"voice content")
 			g._on_action("begin")
+			var heard: int=g.final_voices.size()
+			check(pickup["used"],"heard voice is consumed")
 			g._interact()
-			g._on_action("begin")
+			check(g.final_voices.size()==heard,"heard voice cannot repeat")
+			if g.state=="found_skill": g._on_action("scroll_leave")
+			else: g._on_action("begin")
+			check(g.state=="playing","nearby exploration returns to play")
 	check(g.final_voices.size()==3,"three unique voices")
 	for pickup in g.pickups:
 		if pickup["kind"]=="story":
